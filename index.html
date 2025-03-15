@@ -13,7 +13,7 @@
             color: #333;
         }
         .card-container {
-            max-width: 400px; /* Reduzido de 600px para 400px */
+            max-width: 550px; /* Ajustado para formato mais horizontal */
             margin: 20px auto;
             background-color: #fff;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -21,90 +21,96 @@
             overflow: hidden;
         }
         .card-header {
-            /* Cores do logotipo - azul com detalhes dourados */
             background: linear-gradient(135deg, #1e3a8a 0%, #243b80 100%);
             color: white;
-            padding: 15px; /* Reduzido de 20px para 15px */
+            padding: 12px;
             text-align: center;
             border-bottom: 3px solid #c8a952; /* Borda dourada */
         }
         .card-header h3 {
             margin: 0;
-            font-size: 16px; /* Reduzido de 24px para 16px */
+            font-size: 16px;
             line-height: 1.3;
         }
         .card-content {
             display: flex;
-            padding: 20px; /* Reduzido de 30px para 20px */
+            padding: 16px;
         }
         .card-logo {
-            flex: 0 0 120px; /* Reduzido de 160px para 120px */
+            flex: 0 0 100px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
         .card-logo img {
-            max-width: 110px; /* Reduzido de 150px para 110px */
+            max-width: 90px;
             height: auto;
         }
         .card-info {
             flex: 1;
-            padding-left: 15px; /* Reduzido de 20px para 15px */
+            padding-left: 15px;
         }
         .card-name {
-            font-size: 18px; /* Reduzido de 22px para 18px */
+            font-size: 18px;
             font-weight: bold;
             color: #1e3a8a;
-            margin-bottom: 3px; /* Reduzido de 5px para 3px */
+            margin-bottom: 3px;
         }
         .card-title {
-            font-size: 14px; /* Reduzido de 16px para 14px */
+            font-size: 14px;
             color: #64748b;
-            margin-bottom: 15px; /* Reduzido de 20px para 15px */
+            margin-bottom: 10px;
         }
         .card-details {
-            margin-top: 10px; /* Reduzido de 15px para 10px */
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 5px;
         }
         .detail-item {
             display: flex;
-            margin-bottom: 8px; /* Reduzido de 10px para 8px */
+            margin-bottom: 6px;
             align-items: center;
+            width: 50%; /* Para criar duas colunas */
         }
         .detail-icon {
-            width: 20px; /* Reduzido de 24px para 20px */
-            margin-right: 8px; /* Reduzido de 10px para 8px */
+            width: 20px;
+            margin-right: 6px;
             text-align: center;
             color: #c8a952; /* Cor dourada para os ícones */
         }
         .detail-text {
-            font-size: 13px; /* Reduzido de 15px para 13px */
+            font-size: 12px;
         }
         .card-footer {
             background-color: #f1f5f9;
-            padding: 10px; /* Reduzido de 15px para 10px */
+            padding: 8px;
             text-align: center;
             border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .card-footer a {
+        .card-slogan {
             color: #1e3a8a;
-            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
         }
         .social-links {
             display: flex;
-            justify-content: center;
-            gap: 12px; /* Reduzido de 15px para 12px */
-            margin-top: 8px; /* Reduzido de 10px para 8px */
+            gap: 10px;
         }
         .social-icon {
-            width: 30px; /* Reduzido de 36px para 30px */
-            height: 30px; /* Reduzido de 36px para 30px */
-            background-color: #1e3a8a;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(145deg, #c8a952, #e6c767); /* Dourado do logotipo */
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
-            font-size: 14px; /* Reduzido de 18px para 14px */
+            color: #1e3a8a; /* Azul para texto nos círculos dourados */
+            font-size: 13px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-weight: bold;
         }
     </style>
 </head>
@@ -129,6 +135,10 @@
                         <div class="detail-text">jabreu@iacm.gov.mz</div>
                     </div>
                     <div class="detail-item">
+                        <div class="detail-icon">🌐</div>
+                        <div class="detail-text">www.iacm.gov.mz</div>
+                    </div>
+                    <div class="detail-item">
                         <div class="detail-icon">📱</div>
                         <div class="detail-text">+258 843051210</div>
                     </div>
@@ -136,11 +146,7 @@
                         <div class="detail-icon">📱</div>
                         <div class="detail-text">+258 823051210</div>
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-icon">🌐</div>
-                        <div class="detail-text">www.iacm.gov.mz</div>
-                    </div>
-                    <div class="detail-item">
+                    <div class="detail-item" style="width: 100%;">
                         <div class="detail-icon">📍</div>
                         <div class="detail-text">Caixa Postal 227-Maputo-Moçambique</div>
                     </div>
@@ -149,7 +155,7 @@
         </div>
         
         <div class="card-footer">
-            <div style="color: #1e3a8a; font-weight: 500;">Segurança em Primeiro</div>
+            <div class="card-slogan">Segurança em Primeiro</div>
             <div class="social-links">
                 <a href="#" class="social-icon">in</a>
                 <a href="#" class="social-icon">f</a>
@@ -158,4 +164,3 @@
         </div>
     </div>
 </body>
-</html>
