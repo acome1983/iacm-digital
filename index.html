@@ -13,7 +13,7 @@
             color: #333;
         }
         .card-container {
-            max-width: 550px; /* Ajustado para formato mais horizontal */
+            max-width: 500px;
             margin: 20px auto;
             background-color: #fff;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -25,7 +25,7 @@
             color: white;
             padding: 12px;
             text-align: center;
-            border-bottom: 3px solid #c8a952; /* Borda dourada */
+            border-bottom: 3px solid #c8a952;
         }
         .card-header h3 {
             margin: 0;
@@ -61,24 +61,23 @@
             color: #64748b;
             margin-bottom: 10px;
         }
-        .card-details {
+        .contact-list {
             display: flex;
-            flex-wrap: wrap;
-            margin-top: 5px;
+            flex-direction: column;
+            margin-top: 10px;
         }
-        .detail-item {
+        .contact-item {
             display: flex;
-            margin-bottom: 6px;
             align-items: center;
-            width: 50%; /* Para criar duas colunas */
+            margin-bottom: 8px;
         }
-        .detail-icon {
+        .contact-icon {
             width: 20px;
-            margin-right: 6px;
+            margin-right: 8px;
             text-align: center;
-            color: #c8a952; /* Cor dourada para os ícones */
+            color: #c8a952;
         }
-        .detail-text {
+        .contact-text {
             font-size: 12px;
         }
         .card-footer {
@@ -102,12 +101,12 @@
         .social-icon {
             width: 28px;
             height: 28px;
-            background: linear-gradient(145deg, #c8a952, #e6c767); /* Dourado do logotipo */
+            background: linear-gradient(145deg, #c8a952, #e6c767);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #1e3a8a; /* Azul para texto nos círculos dourados */
+            color: #1e3a8a;
             font-size: 13px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             font-weight: bold;
@@ -129,26 +128,27 @@
                 <div class="card-name">Cmdt. João Martins de Abreu</div>
                 <div class="card-title">Presidente do Conselho de Administração</div>
                 
-                <div class="card-details">
-                    <div class="detail-item">
-                        <div class="detail-icon">📧</div>
-                        <div class="detail-text">jabreu@iacm.gov.mz</div>
+                <!-- Contatos em linha vertical -->
+                <div class="contact-list">
+                    <div class="contact-item">
+                        <div class="contact-icon">📧</div>
+                        <div class="contact-text">jabreu@iacm.gov.mz</div>
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-icon">🌐</div>
-                        <div class="detail-text">www.iacm.gov.mz</div>
+                    <div class="contact-item">
+                        <div class="contact-icon">🌐</div>
+                        <div class="contact-text">www.iacm.gov.mz</div>
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-icon">📱</div>
-                        <div class="detail-text">+258 843051210</div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <div class="contact-text">+258 843051210</div>
                     </div>
-                    <div class="detail-item">
-                        <div class="detail-icon">📱</div>
-                        <div class="detail-text">+258 823051210</div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <div class="contact-text">+258 823051210</div>
                     </div>
-                    <div class="detail-item" style="width: 100%;">
-                        <div class="detail-icon">📍</div>
-                        <div class="detail-text">Caixa Postal 227-Maputo-Moçambique</div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div class="contact-text">Caixa Postal 227-Maputo-Moçambique</div>
                     </div>
                 </div>
             </div>
@@ -164,3 +164,4 @@
         </div>
     </div>
 </body>
+</html>
