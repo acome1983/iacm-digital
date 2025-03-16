@@ -61,17 +61,17 @@
             font-weight: bold;
             color: #1e3a8a;
             margin-bottom: 5px;
-            white-space: nowrap; /* Garante que fique em uma linha */
+            white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; /* Adiciona "..." se o texto não couber */
+            text-overflow: ellipsis;
         }
         .card-title {
             font-size: 13px;
             color: #64748b;
             margin-bottom: 10px;
-            white-space: nowrap; /* Garante que fique em uma linha */
+            white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; /* Adiciona "..." se o texto não couber */
+            text-overflow: ellipsis;
         }
         .right-section {
             flex: 0 0 60%;
@@ -90,7 +90,7 @@
             margin-bottom: 6px;
         }
         .contact-label {
-            min-width: 45px;
+            width: 45px;
             color: #1e3a8a;
             font-weight: 500;
             font-size: 12px;
@@ -98,10 +98,12 @@
             margin-right: 8px;
             flex-shrink: 0;
         }
+        /* Importante: garante que o conteúdo sempre comece no mesmo ponto */
         .contact-text {
             font-size: 12px;
             color: #1e3a8a;
             word-break: break-word;
+            padding-left: 2px; /* Ajuste fino para alinhamento */
         }
         .website {
             margin-top: 15px;
@@ -139,6 +141,28 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             font-weight: bold;
             text-decoration: none;
+        }
+        
+        /* Alinhamento tabular para informações de contato */
+        .contact-list {
+            display: table;
+            width: 100%;
+        }
+        
+        .contact-item {
+            display: table-row;
+        }
+        
+        .contact-label, .contact-text {
+            display: table-cell;
+            padding-bottom: 6px;
+            vertical-align: top;
+        }
+        
+        .contact-label {
+            width: 45px;
+            text-align: right;
+            padding-right: 8px;
         }
         
         /* Regras responsivas para dispositivos móveis */
@@ -185,12 +209,14 @@
                 max-width: 80px;
             }
             
-            .contact-item {
-                margin-bottom: 8px;
+            .card-name, .card-title {
+                white-space: normal;
             }
             
-            .card-name, .card-title {
-                white-space: normal; /* Permite que quebre em telas pequenas */
+            /* Mantém o layout tabular mesmo em tela pequena */
+            .contact-list {
+                display: table;
+                width: 100%;
             }
             
             /* Forçar layout landscape para exibição adequada */
@@ -214,7 +240,7 @@
                 }
                 
                 .card-name, .card-title {
-                    white-space: nowrap; /* Volta a não quebrar no modo paisagem */
+                    white-space: nowrap;
                 }
             }
         }
@@ -239,6 +265,7 @@
             
             <div class="right-section">
                 <div class="contact-list">
+                    
                     <div class="contact-item">
                         <div class="contact-label">Mob:</div>
                         <div class="contact-text">+258 843051210</div>
@@ -251,9 +278,10 @@
                         <div class="contact-label">Email:</div>
                         <div class="contact-text">jabreu@iacm.gov.mz</div>
                     </div>
-                     <div class="contact-item">
-                        <div class="contact-label">CP:</div>
-                        <div class="contact-text">Caixa Postal 227, Maputo, Moçambique</div>
+                  
+                    <div class="contact-item">
+                        <div class="contact-label">End.:</div>
+                        <div class="contact-text">227, Maputo, Moçambique</div>
                     </div>
                 </div>
             </div>
