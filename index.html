@@ -61,15 +61,17 @@
             font-weight: bold;
             color: #1e3a8a;
             margin-bottom: 5px;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
+            white-space: nowrap; /* Garante que fique em uma linha */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Adiciona "..." se o texto não couber */
         }
         .card-title {
             font-size: 13px;
             color: #64748b;
             margin-bottom: 10px;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
+            white-space: nowrap; /* Garante que fique em uma linha */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Adiciona "..." se o texto não couber */
         }
         .right-section {
             flex: 0 0 60%;
@@ -187,6 +189,10 @@
                 margin-bottom: 8px;
             }
             
+            .card-name, .card-title {
+                white-space: normal; /* Permite que quebre em telas pequenas */
+            }
+            
             /* Forçar layout landscape para exibição adequada */
             @media screen and (orientation: landscape) {
                 .card-content {
@@ -205,6 +211,10 @@
                     flex: 0 0 60%;
                     border-left: 1px solid #ddd;
                     padding-left: 15px;
+                }
+                
+                .card-name, .card-title {
+                    white-space: nowrap; /* Volta a não quebrar no modo paisagem */
                 }
             }
         }
