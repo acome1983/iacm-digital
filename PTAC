@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plano Analítico - Arquitetura de Computadores I</title>
+  <style>
+    :root {
+      --color-primary: #2563eb;
+      --color-primary-dark: #1e40af;
+      --color-primary-light: #93c5fd;
+      --color-secondary: #7c3aed;
+      --color-secondary-light: #c4b5fd;
+      --color-accent: #f97316;
+      --color-accent-light: #ffedd5;
+      --color-success: #10b981;
+      --color-success-light: #ecfdf5;
+      --color-warning: #f59e0b;
+      --color-warning-light: #fffbeb;
+      --color-danger: #ef4444;
+      --color-danger-light: #fee2e2;
+      --color-dark: #1e293b;
+      --color-gray: #64748b;
+      --color-light: #f8fafc;
+      
+      /* Cores para os temas */
+      --tema-1: #2563eb;
+      --tema-2: #7c3aed;
+      --tema-3: #f97316;
+      --tema-4: #10b981;
+      --tema-5: #f59e0b;
+      --tema-6: #6366f1;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f4f8;
+      color: var(--color-dark);
+    }
+    
+    .slide-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      padding: 20px;
+    }
+    
+    .slide {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      margin-bottom: 30px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .slide:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .slide-content {
+      padding: 1.5rem;
+    }
+    
+    h2 {
+      color: var(--color-primary-dark);
+      margin-top: 0;
+      font-size: 1.6rem;
+      border-bottom: 2px solid var(--color-primary-light);
+      padding-bottom: 10px;
+    }
+    
+    h3 {
+      color: var(--color-primary);
+      font-size: 1.3rem;
+      margin-top: 1.5rem;
+      margin-bottom: 0.8rem;
+    }
+    
+    h4 {
+      color: var(--color-secondary);
+      font-size: 1.1rem;
+      margin-top: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .tema-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .tema-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.2rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      border-left: 4px solid var(--tema-color, var(--tema-1));
+      transition: transform 0.2s ease;
+    }
+    
+    .tema-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+    
+    .tema-1 { --tema-color: var(--tema-1); }
+    .tema-2 { --tema-color: var(--tema-2); }
+    .tema-3 { --tema-color: var(--tema-3); }
+    .tema-4 { --tema-color: var(--tema-4); }
+    .tema-5 { --tema-color: var(--tema-5); }
+    .tema-6 { --tema-color: var(--tema-6); }
+    
+    .tema-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .tema-icon {
+      width: 40px;
+      height: 40px;
+      background-color: var(--tema-color, var(--tema-1));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      color: white;
+      font-size: 1.25rem;
+    }
+    
+    .tema-title {
+      font-weight: bold;
+      color: var(--tema-color, var(--tema-1));
+      margin: 0;
+      font-size: 1.1rem;
+    }
+    
+    .tema-details {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+      color: var(--color-gray);
+    }
+    
+    .tema-semana, .tema-horas {
+      display: flex;
+      align-items: center;
+    }
+    
+    .tema-semana svg, .tema-horas svg {
+      margin-right: 5px;
+    }
+    
+    .conteudo-list {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 1rem;
+    }
+    
+    .conteudo-list li {
+      margin-bottom: 0.5rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+    
+    .conteudo-list li:before {
+      content: "•";
+      color: var(--tema-color, var(--tema-1));
+      font-weight: bold;
+      font-size: 1.2rem;
+      position: absolute;
+      left: 0;
+      top: -2px;
+    }
+    
+    .bibliografia-section {
+      background-color: var(--color-light);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      border-left: 4px solid var(--color-primary);
+    }
+    
+    .bibliografia-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .bibliografia-list li {
+      margin-bottom: 0.8rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+    
+    .bibliografia-list li:before {
+      content: "📚";
+      position: absolute;
+      left: 0;
+    }
+    
+    .competencias-section {
+      background: linear-gradient(to right, var(--color-primary-light), white);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+    
+    .competencias-list, .objectivos-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .competencias-list li, .objectivos-list li {
+      margin-bottom: 0.5rem;
+      padding-left: 1.8rem;
+      position: relative;
+    }
+    
+    .competencias-list li:before {
+      content: "✓";
+      color: var(--color-success);
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+    }
+    
+    .objectivos-list li:before {
+      content: "➤";
+      color: var(--color-primary);
+      position: absolute;
+      left: 0;
+    }
+    
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      background: linear-gradient(to right, var(--color-primary-dark), var(--color-primary));
+      color: white;
+      border-radius: 12px 12px 0 0;
+    }
+    
+    .course-info {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .course-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    
+    .course-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      background-color: white;
+      padding: 6px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logo-placeholder {
+      width:100px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 20px;
+      color: var(--color-primary);
+      background-color: var(--color-primary-light);
+      border-radius: 5px;
+    }
+    
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 0.8rem;
+      border-radius: 0 0 12px 12px;
+    }
+    
+    .teacher-info {
+      font-style: italic;
+    }
+    
+    .page-number {
+      background-color: #e2e8f0;
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+    
+    .intro-container {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      gap: 2rem;
+    }
+    
+    .intro-image {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .intro-text {
+      flex: 1.5;
+    }
+    
+    .caixa-info {
+      background-color: var(--color-primary-light);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+    }
+    
+    .temas-resumo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .tema-resumo-item {
+      background-color: white;
+      border-radius: 8px;
+      padding: 1rem;
+      flex: 1;
+      min-width: 200px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      border-bottom: 3px solid var(--tema-color, var(--tema-1));
+    }
+    
+    .tema-resumo-item:nth-child(1) { --tema-color: var(--tema-1); }
+    .tema-resumo-item:nth-child(2) { --tema-color: var(--tema-2); }
+    .tema-resumo-item:nth-child(3) { --tema-color: var(--tema-3); }
+    .tema-resumo-item:nth-child(4) { --tema-color: var(--tema-4); }
+    .tema-resumo-item:nth-child(5) { --tema-color: var(--tema-5); }
+    .tema-resumo-item:nth-child(6) { --tema-color: var(--tema-6); }
+    
+    .tema-resumo-titulo {
+      color: var(--tema-color);
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .avaliacao-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .avaliacao-card {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .avaliacao-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.8rem;
+      background-color: var(--color-primary-light);
+      color: var(--color-primary-dark);
+      font-size: 1.4rem;
+    }
+    
+    .avaliacao-titulo {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    
+    .avaliacao-valor {
+      font-size: 0.9rem;
+      color: var(--color-gray);
+      text-align: center;
+    }
+    
+    .peso-avaliacao {
+      background-color: var(--color-light);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .peso-avaliacao p {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="slide-container">
+    <!-- Slide 1: Introdução ao Plano Analítico -->
+    <div class="slide">
+      <!-- Cabeçalho do slide -->
+      <div class="slide-header">
+        <div class="course-info">
+          <div class="course-title">Curso de Informática de Gestão</div>
+          <div class="course-subtitle">Disciplina de Arquitetura de Computadores I</div>
+        </div>
+        
+        <div class="logo-container">
+          <div class="logo-placeholder">ISGE-GM</div>
+        </div>
+      </div>
+      
+      <div class="slide-content">
+        <h2>Plano Analítico 2025</h2>
+        
+        <div class="intro-container">
+          <div class="intro-image">
+            <svg width="260" height="200" xmlns="http://www.w3.org/2000/svg">
+              <!-- CPU/Microprocessador -->
+              <rect x="70" y="50" width="120" height="120" rx="5" fill="#f0f9ff" stroke="#2563eb" stroke-width="2"/>
+              
+              <!-- Pinos do processador -->
+              <line x1="80" y1="172" x2="80" y2="190" stroke="#64748b" stroke-width="2"/>
+              <line x1="90" y1="172" x2="90" y2="190" stroke="#64748b" stroke-width="2"/>
+              <line x1="100" y1="172" x2="100" y2="190" stroke="#64748b" stroke-width="2"/>
+              <line x1="110" y1="172" x2="110" y2="190" stroke="#64748b" stroke-width="2"/>
+              <line x1="120" y1="172" x2="120" y2="190" stroke="#64748b" stroke-width="2"/>
+              <line x1="130" y1="172" x2="130" y2="190" stroke="#64748b" stroke-width="2"/>
+              <line x1="140" y1="172" x2="140" y2="190" stroke="#64748b" stroke-width="2"/>
+              <line x1="150" y1="172" x2="150" y2="190" stroke="#64748b" stroke-width="2"/>
+              <line x1="160" y1="172" x2="160" y2="190" stroke="#64748b" stroke-width="2"/>
+              <line x1="170" y1="172" x2="170" y2="190" stroke="#64748b" stroke-width="2"/>
+              
+              <!-- Detalhes do processador -->
+              <rect x="85" y="65" width="90" height="90" rx="3" fill="#dbeafe"/>
+              <text x="130" y="110" font-family="Arial" font-size="11" text-anchor="middle" fill="#1e40af">CPU</text>
+              <line x1="95" y1="120" x2="165" y2="120" stroke="#2563eb" stroke-width="1"/>
+              <line x1="95" y1="130" x2="165" y2="130" stroke="#2563eb" stroke-width="1"/>
+              <line x1="95" y1="140" x2="165" y2="140" stroke="#2563eb" stroke-width="1"/>
+              
+              <!-- Circuitos -->
+              <line x1="40" y1="80" x2="70" y2="80" stroke="#3b82f6" stroke-width="1.5"/>
+              <line x1="40" y1="100" x2="70" y2="100" stroke="#3b82f6" stroke-width="1.5"/>
+              <line x1="40" y1="120" x2="70" y2="120" stroke="#3b82f6" stroke-width="1.5"/>
+              <line x1="40" y1="140" x2="70" y2="140" stroke="#3b82f6" stroke-width="1.5"/>
+              
+              <line x1="190" y1="80" x2="220" y2="80" stroke="#3b82f6" stroke-width="1.5"/>
+              <line x1="190" y1="100" x2="220" y2="100" stroke="#3b82f6" stroke-width="1.5"/>
+              <line x1="190" y1="120" x2="220" y2="120" stroke="#3b82f6" stroke-width="1.5"/>
+              <line x1="190" y1="140" x2="220" y2="140" stroke="#3b82f6" stroke-width="1.5"/>
+              
+              <!-- Pontos de conexão -->
+              <circle cx="40" cy="80" r="3" fill="#1e40af"/>
+              <circle cx="40" cy="100" r="3" fill="#1e40af"/>
+              <circle cx="40" cy="120" r="3" fill="#1e40af"/>
+              <circle cx="40" cy="140" r="3" fill="#1e40af"/>
+              
+              <circle cx="220" cy="80" r="3" fill="#1e40af"/>
+              <circle cx="220" cy="100" r="3" fill="#1e40af"/>
+              <circle cx="220" cy="120" r="3" fill="#1e40af"/>
+              <circle cx="220" cy="140" r="3" fill="#1e40af"/>
+            </svg>
+          </div>
+          <div class="intro-text">
+            <p><strong>A Arquitetura de Computadores I</strong> é uma disciplina fundamental que explora os princípios básicos da organização e funcionamento interno dos computadores.</p>
+            <p>Neste curso, os estudantes adquirirão conhecimentos sobre os componentes de hardware, como CPUs, memórias e barramentos, além de desenvolver compreensão sobre a comunicação entre estes elementos.</p>
+            <p>Com carga horária semanal de <strong>4 horas</strong> e atribuição de <strong>3 créditos acadêmicos</strong>, esta disciplina fornece as bases essenciais para a compreensão dos sistemas computacionais modernos.</p>
+          </div>
+        </div>
+        
+        <div class="caixa-info">
+          <p style="margin: 0;"><strong>Neste plano:</strong> Competências esperadas, objectivos cognitivos, conteúdo programático detalhado, estratégias metodológicas, bibliografia recomendada e critérios de avaliação.</p>
+        </div>
+      </div>
+      
+      <!-- Rodapé do slide -->
+      <div class="slide-footer">
+        <div class="teacher-info">Docente: Msc, Eng. Alberto Comé</div>
+        <div class="page-number">1/12</div>
+      </div>
+    </div>
+    
+    <!-- Slide 2: Competências e Objetivos -->
+    <div class="slide">
+      <!-- Cabeçalho do slide -->
+      <div class="slide-header">
+        <div class="course-info">
+          <div class="course-title">Curso de Informática de Gestão</div>
+          <div class="course-subtitle">Disciplina de Arquitetura de Computadores I</div>
+        </div>
+        
+        <div class="logo-container">
+          <div class="logo-placeholder">ISGE-gm</div>
+        </div>
+      </div>
+      
+      <div class="slide-content">
+        <h2>Competências e Objectivos</h2>
+        
+        <div class="competencias-section">
+          <h3>Competências a Desenvolver</h3>
+          <ul class="competencias-list">
+            <li>Aplicar conhecimento teórico para entender o funcionamento interno dos computadores.</li>
+            <li>Desenvolver habilidades práticas em programação de baixo nível e compreensão de hardware.</li>
+            <li>Analisar e avaliar diferentes arquiteturas de computadores e seus componentes.</li>
+            <li>Projectar soluções simples usando princípios de arquitetura de computadores.</li>
+          </ul>
+        </div>
+        
+        <h3>Objectivos Cognitivos</h3>
+        <ul class="objectivos-list">
+          <li>Compreender a estrutura e a função dos principais componentes de um computador.</li>
+          <li>Entender como as instruções são processadas dentro de uma CPU.</li>
+          <li>Identificar os princípios da programação em Assembly e sua aplicação no controle de hardware.</li>
+          <li>Analisar problemas e aplicar conhecimentos de arquitetura de computadores para solucioná-los.</li>
+        </ul>
+        
+        <div class="temas-resumo">
+          <div class="tema-resumo-item">
+            <div class="tema-resumo-titulo">Fundamentos de Computação</div>
+            <p>História e evolução, arquiteturas básicas e funcionamento de CPUs</p>
+          </div>
+          <div class="tema-resumo-item">
+            <div class="tema-resumo-titulo">Componentes de Hardware</div>
+            <p>Memórias, processadores, dispositivos E/S e barramentos</p>
+          </div>
+          <div class="tema-resumo-item">
+            <div class="tema-resumo-titulo">Sistemas Digitais</div>
+            <p>Sistemas de numeração, portas lógicas e circuitos básicos</p>
+          </div>
+          <div class="tema-resumo-item">
+            <div class="tema-resumo-titulo">Programação Assembly</div>
+            <p>Linguagem de baixo nível, instruções e manipulação direta do hardware</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Rodapé do slide -->
+      <div class="slide-footer">
+        <div class="teacher-info">Docente: Msc, Eng. Alberto Comé</div>
+        <div class="page-number">2/12</div>
+      </div>
+    </div>
+    
+    <!-- Slide 3: Conteúdo Programático - Unidades I & II -->
+    <div class="slide">
+      <div class="slide-header">
+        <div class="course-info">
+          <div class="course-title">Curso de Informática de Gestão</div>
+          <div class="course-subtitle">Disciplina de Arquitetura de Computadores I</div>
+        </div>
+        
+        <div class="logo-container">
+          <div class="logo-placeholder">ISGE-GM</div>
+        </div>
+      </div>
+      
+      <div class="slide-content">
+        <h2>Conteúdo Programático - Semanas I & II</h2>
+        
+        <div class="tema-grid">
+          <div class="tema-card tema-1">
+            <div class="tema-header">
+              <div class="tema-icon">1</div>
+              <h3 class="tema-title">INTRODUÇÃO À ARQUITETURA DE COMPUTADORES</h3>
+            </div>
+            <div class="tema-details">
+              <div class="tema-semana">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Semanas: I & II
+              </div>
+              <div class="tema-horas">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Carga horária: 4h
+              </div>
+            </div>
+            <ul class="conteudo-list">
+              <li>História da Computação: Evolução dos computadores desde os primeiros dispositivos de cálculo até os modernos sistemas de computação.</li>
+              <li>Arquiteturas de Computadores: Diferenças entre a arquitetura Von Neumann e Harvard; introdução a conceitos como paralelismo e computação distribuída</li>
+              <li>Princípios Básicos: Compreensão dos componentes fundamentais de um computador (CPU, memória, dispositivos de entrada/saída, armazenamento secundário).</li>
+              <li>Funções da CPU: Estudo das funções da Unidade Central de Processamento.</li>
+            </ul>
+          </div>
+          
+          <div class="tema-card tema-2">
+            <div class="tema-header">
+              <div class="tema-icon">2</div>
+              <h3 class="tema-title">COMPONENTES DE UM COMPUTADOR</h3>
+            </div>
+            <div class="tema-details">
+              <div class="tema-semana">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Semanas: I & II
+              </div>
+              <div class="tema-horas">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Carga horária: 4h
+              </div>
+            </div>
+            <ul class="conteudo-list">
+              <li>Sistemas de Memória: Exploração das diferenças entre memória RAM (Random Access Memory), ROM (Read-Only Memory), cache e outros tipos de armazenamento.</li>
+              <li>Processadores (CPUs): Entendimento do processamento de instruções, importância da velocidade do clock, e função dos núcleos múltiplos.</li>
+              <li>Dispositivos de Entrada e Saída (E/S): Discussão sobre os diversos dispositivos de entrada e saída, e sua interação com a CPU e memória.</li>
+              <li>Barramentos e Conectividade: Análise de como os barramentos funcionam como canais de comunicação entre os componentes do hardware.</li>
+              <li>Fontes de Alimentação: Revisão dos requisitos de energia de um computador.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="slide-footer">
+        <div class="teacher-info">Docente: Msc, Eng. Alberto Comé</div>
+        <div class="page-number">3/12</div>
+      </div>
+    </div>
+    
+    <!-- Slide 4: Conteúdo Programático - Unidades I & II (Continuação) -->
+    <div class="slide">
+      <div class="slide-header">
+        <div class="course-info">
+          <div class="course-title">Curso de Informática de Gestão</div>
+          <div class="course-subtitle">Disciplina de Arquitetura de Computadores I</div>
+        </div>
+        
+        <div class="logo-container">
+          <div class="logo-placeholder">ISGE-GM</div>
+        </div>
+      </div>
+      
+      <div class="slide-content">
+        <h2>Conteúdo Programático - Semanas I & II (Continuação)</h2>
+        
+        <div class="tema-grid">
+          <div class="tema-card tema-3">
+            <div class="tema-header">
+              <div class="tema-icon">3</div>
+              <h3 class="tema-title">INTRODUÇÃO AOS SISTEMAS DIGITAIS</h3>
+            </div>
+            <div class="tema-details">
+              <div class="tema-semana">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Semanas: I & II
+              </div>
+              <div class="tema-horas">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Carga horária: 4h
+              </div>
+            </div>
+            <ul class="conteudo-list">
+              <li>Fundamentos de Sistemas Digitais: Exploração dos conceitos básicos de sistemas digitais, incluindo a diferença entre sinais digitais e analógicos.</li>
+              <li>Lógica Digital e Representação de Dados: Introdução aos sistemas de numeração binário, octal, decimal e hexadecimal e suas conversões.</li>
+              <li>Portas Lógicas e Circuitos: Estudo das portas lógicas fundamentais (AND, OR, NOT) e como elas são usadas para construir circuitos lógicos complexos.</li>
+            </ul>
+          </div>
+          
+          <div class="tema-card tema-4">
+            <div class="tema-header">
+              <div class="tema-icon">4</div>
+              <h3 class="tema-title">REPRESENTAÇÃO DE NÚMEROS COM SINAL</h3>
+            </div>
+            <div class="tema-details">
+              <div class="tema-semana">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Semanas: I & II
+              </div>
+              <div class="tema-horas">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Carga horária: 4h
+              </div>
+            </div>
+            <ul class="conteudo-list">
+              <li>Representação de Números com Sinal: Exploração de como os números negativos são representados em sistemas de computação, incluindo sinal e magnitude, complemento para um e complemento para dois.</li>
+              <li>Aritmética Binária: Execução de operações aritméticas em binário, incluindo adição, subtração, multiplicação e divisão.</li>
+              <li>Overflow e Underflow: Entendimento das condições de overflow e underflow em aritmética computacional.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="slide-footer">
+        <div class="teacher-info">Docente: Msc, Eng. Alberto Comé</div>
+        <div class="page-number">4/12</div>
+      </div>
+    </div>
+    
+    <!-- Slide 5: Conteúdo Programático - Continuação Unidades I & II -->
+    <div class="slide">
+      <div class="slide-header">
+        <div class="course-info">
+          <div class="course-title">Curso de Informática de Gestão</div>
+          <div class="course-subtitle">Disciplina de Arquitetura de Computadores I</div>
+        </div>
+        
+        <div class="logo-container">
+          <div class="logo-placeholder">ISGE-GM</div>
+        </div>
+      </div>
+      
+      <div class="slide-content">
+        <h2>Conteúdo Programático - Semanas I & II (Continuação)</h2>
+        
+        <div class="tema-grid">
+          <div class="tema-card tema-5">
+            <div class="tema-header">
+              <div class="tema-icon">5</div>
+              <h3 class="tema-title">CONCEITOS DE ÁLGEBRA BOOLEANA</h3>
+            </div>
+            <div class="tema-details">
+              <div class="tema-semana">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Semanas: I & II
+              </div>
+              <div class="tema-horas">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Carga horária: 4h
+              </div>
+            </div>
+            <ul class="conteudo-list">
+              <li>Fundamentos da Álgebra Booleana: Introdução às variáveis booleanas e operações básicas (AND, OR, NOT, XOR).</li>
+              <li>Leis da Álgebra Booleana: Discussão sobre as leis e propriedades fundamentais da álgebra booleana, incluindo idempotência, complemento, e leis de De Morgan.</li>
+              <li>Simplificação de Expressões Booleanas: Uso de mapas de Karnaugh e teoremas booleanos para simplificar expressões lógicas.</li>
+            </ul>
+          </div>
+          
+          <div class="tema-card tema-6">
+            <div class="tema-header">
+              <div class="tema-icon">6</div>
+              <h3 class="tema-title">ESTRUTURA E FUNÇÃO DAS INSTRUÇÕES DE MÁQUINA</h3>
+            </div>
+            <div class="tema-details">
+              <div class="tema-semana">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Semana: II
+              </div>
+              <div class="tema-horas">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Carga horária: 2h
+              </div>
+            </div>
+            <ul class="conteudo-list">
+              <li>Estrutura e função das instruções de máquina.</li>
+              <li>Formatos de instrução: fixo e variável.</li>
+              <li>Tipos de instruções: aritméticas, lógicas, de controle, de entrada/saída.</li>
+              <li>Codificação de instruções e conjunto de instruções.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <div class="slide-footer">
+        <div class="teacher-info">Docente: Msc, Eng. Alberto Comé</div>
+        <div class="page-number">5/12</div>
+      </div>
+    </div>
+    
+    <!-- Slide 6: Conteúdo Programático - Unidade III -->
+    <div class="slide">
+      <div class="slide-header">
+        <div class="course-info">
+          <div class="course-title">Curso de Informática de Gestão</div>
+          <div class="course-subtitle">Disciplina de Arquitetura de Computadores I</div>
+        </div>
+        
+        <div class="logo-container">
+          <div class="logo-placeholder">ISGE-GM</div>
+        </div>
+      </div>
+      
+      <div class="slide-content">
+        <h2>Conteúdo Programático - Semana III</h2>
+        
+        <div class="tema-grid">
+          <div class="tema-card tema-1">
+            <div class="tema-header">
+              <div class="tema-icon">7</div>
+              <h3 class="tema-title">CONCEITOS BÁSICOS DE PROGRAMAÇÃO EM LINGUAGEM ASSEMBLY</h3>
+            </div>
+            <div class="tema-details">
+              <div class="tema-semana">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                Semana: III
+              </div>
+              <div class="tema-horas">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Carga horária: 4h
+              </div>
+            </div>
+            <ul class="conteudo-list">
+              <li>Introdução à linguagem Assembly: sintaxe básica e estrutura.</li>
+              <li>Operações aritméticas e de manipulação de dados em Assembly.</li>
+              <li>Controle de fluxo: loops e condicionais.</li>
+              <li>Chamadas de sistema e interação com o sistema operacional.</li>
+            </ul>
+            
+            <div style="margin-top: 20px; padding: 15px; background-color: var(--color-primary-light); border-radius: 8px;">
+              <h4 style="margin-top: 0; color: var(--color-primary-dark);">Abordagem Prática</h4>
+              <p style="margin-bottom: 0;">Nesta unidade, os alunos terão a oportunidade de escrever programas simples em Assembly, trabalhar com simuladores, e analisar programas existentes para entender como a linguagem interage diretamente com o hardware.</p>
+            </div>
+          </div>
+          
+          <div style="padding: 20px; background-color: white; border-radius: 8px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);">
+            <h3 style="color: var(--color-primary); margin-top: 0;">Estratégias Metodológicas</h3>
+            
+            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+              <div style="width: 40px; height: 40px; background-color: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: white; font-size: 20px;">🔍</div>
+              <div>
+                <h4 style="margin: 0; color: var(--color-primary-dark);">Pesquisa Dirigida</h4>
+                <p style="margin: 5px 0 0 0;">Investigação da história dos componentes de computador e sua evolução.</p>
+              </div>
+            </div>
+            
+            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+              <div style="width: 40px; height: 40px; background-color: var(--color-secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: white; font-size: 20px;">📝</div>
+              <div>
+                <h4 style="margin: 0; color: var(--color-secondary);">Exercícios Práticos</h4>
+                <p style="margin: 5px 0 0 0;">Resolução de problemas de conversão entre sistemas numéricos e análise de circuitos.</p>
+              </div>
+            </div>
+            
+            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+              <div style="width: 40px; height: 40px; background-color: var(--color-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: white; font-size: 20px;">💻</div>
+              <div>
+                <h4 style="margin: 0; color: var(--color-accent);">Laboratório Prático</h4>
+                <p style="margin: 5px 0 0 0;">Montagem e teste de circuitos básicos usando simuladores digitais.</p>
+              </div>
+            </div>
+            
+            <div style="display: flex; align-items: center;">
+              <div style="width: 40px; height: 40px; background-color: var(--color-success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: white; font-size: 20px;">🔄</div>
+              <div>
+                <h4 style="margin: 0; color: var(--color-success);">Estudo de Caso</h4>
+                <p style="margin: 5px 0 0 0;">Análise de sistemas computacionais reais e seus componentes.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="slide-footer">
+        <div class="teacher-info">Docente: Msc, Eng. Alberto Comé</div>
+        <div class="page-number">6/12</div>
+      </div>
+    </div>
+    
+    <!-- Slide 7: Bibliografia Recomendada -->
+    <div class="slide">
+      <div class="slide-header">
+        <div class="course-info">
+          <div class="course-title">Curso de Informática de Gestão</div>
+          <div class="course-subtitle">Disciplina de Arquitetura de Computadores I</div>
+        </div>
+        
+        <div class="logo-container">
+          <div class="logo-placeholder">ISGE-GM</div>
+        </div>
+      </div>
+      
+      <div class="slide-content">
+        <h2>Bibliografia Recomendada</h2>
+        
+        <div class="bibliografia-section">
+          <h3 style="margin-top: 0;">Obras Fundamentais</h3>
+          <ul class="bibliografia-list">
+            <li>Patterson, D. A., & Hennessy, J. L. (2017). "Computer Organization and Design MIPS Edition: The Hardware/Software Interface". Morgan Kaufmann.</li>
+            <li>Stallings, W. (2015). "Computer Organization and Architecture". Prentice Hall.</li>
+            <li>Tanenbaum, A. S., & Austin, T. (2012). "Structured Computer Organization". Prentice Hall.</li>
+            <li>Hamacher, V. C., Vranesic, Z. G., & Zaky, S. G. (2011). "Computer Organization and Embedded Systems". McGraw-Hill Education.</li>
+            <li>Null, L., & Lobur, J. (2014). "The Essentials of Computer Organization and Architecture". Jones & Bartlett Learning.</li>
+          </ul>
+          
+          <h3>Sistemas Digitais e Álgebra Booleana</h3>
+          <ul class="bibliografia-list">
+            <li>Morris Mano, M., & Ciletti, M. D. (2017). "Digital Design: With an Introduction to the Verilog HDL, VHDL, and SystemVerilog". Prentice Hall.</li>
+            <li>Floyd, T. L. (2014). "Digital Fundamentals". Pearson Education.</li>
+            <li>Harris, D. M., & Harris, S. L. (2012). "Digital Design and Computer Architecture". Morgan Kaufmann.</li>
+            <li>Mano, M. M., & Kime, C. R. (2013). "Logic and Computer Design Fundamentals". Prentice Hall.</li>
+            <li>Brown, S., & Vranesic, Z. (2013). "Fundamentals of Digital Logic with Verilog Design". McGraw-Hill Education.</li>
+          </ul>
+          
+          <h3>Programação Assembly</h3>
+          <ul class="bibliografia-list">
+            <li>Irvine, K. R. (2016). "Assembly Language for x86 Processors". Pearson.</li>
+            <li>Bartlett, J. (2009). "Programming from the Ground Up". Bartlett Publishing.</li>
+            <li>Carter, P. (2016). "PC Assembly Language". CreateSpace Independent Publishing Platform.</li>
+          </ul>
+          </div>
+          
+          <div class="slide-footer">
+            <div class="teacher-info">Docente: Msc, Eng. Alberto Comé</div>
+            <div class="page-number">7/12</div>
+          </div>
+          </div>
+          
+          <!-- Slide 8: Sistema de Avaliação -->
+          <div class="slide">
+          <div class="slide-header">
+            <div class="course-info">
+              <div class="course-title">Curso de Informática de Gestão</div>
+              <div class="course-subtitle">Disciplina de Arquitetura de Computadores I</div>
+            </div>
+            
+            <div class="logo-container">
+              <div class="logo-placeholder">ISGE-GM</div>
+            </div>
+          </div>
+          
+          <div class="slide-content">
+            <h2>Sistema de Avaliação</h2>
+            
+            <div class="avaliacao-grid">
+              <div class="avaliacao-card">
+                <div class="avaliacao-icon">📝</div>
+                <div class="avaliacao-titulo">Testes Escritos</div>
+                <div class="avaliacao-valor">Dois testes (formativo e sumativo)</div>
+              </div>
+              
+              <div class="avaliacao-card">
+                <div class="avaliacao-icon">📋</div>
+                <div class="avaliacao-titulo">Trabalho Escrito</div>
+                <div class="avaliacao-valor">Um trabalho</div>
+              </div>
+              
+              <div class="avaliacao-card">
+                <div class="avaliacao-icon">✅</div>
+                <div class="avaliacao-titulo">Tarefas</div>
+                <div class="avaliacao-valor">Cinco tarefas</div>
+              </div>
+              
+              <div class="avaliacao-card">
+                <div class="avaliacao-icon">👨‍🏫</div>
+                <div class="avaliacao-titulo">Participação</div>
+                <div class="avaliacao-valor">Permanente</div>
+              </div>
+              
+              <div class="avaliacao-card">
+                <div class="avaliacao-icon">📅</div>
+                <div class="avaliacao-titulo">Assiduidade</div>
+                <div class="avaliacao-valor">Permanente</div>
+              </div>
+              
+              <div class="avaliacao-card">
+                <div class="avaliacao-icon">📚</div>
+                <div class="avaliacao-titulo">Exame</div>
+                <div class="avaliacao-valor">Normal e recorrência</div>
+              </div>
+            </div>
+            
+            <div class="peso-avaliacao">
+              <h3>Peso das Avaliações</h3>
+              <p><strong>Média de Frequência:</strong> 75% da média dos dois testes mais 25% da média de outros trabalhos.</p>
+              <p><strong>Média Final da Cadeira:</strong> 75% da média de frequência mais 25% da nota de exame.</p>
+            </div>
+          </div>
+          
+          <div class="slide-footer">
+            <div class="teacher-info">Docente: Msc, Eng. Alberto Comé</div>
+            <div class="page-number">8/12</div>
+          </div>
+          </div>
+          
+          <!-- Slide 9: Metodologias de Aprendizagem -->
+          <div class="slide">
+          <div class="slide-header">
+            <div class="course-info">
+              <div class="course-title">Curso de Informática de Gestão</div>
+              <div class="course-subtitle">Disciplina de Arquitetura de Computadores I</div>
+            </div>
+            
+            <div class="logo-container">
+              <div class="logo-placeholder">ISGE-GM</div>
+            </div>
+          </div>
+          
+          <div class="slide-content">
+            <h2>Metodologias de Aprendizagem</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+              <div style="background-color: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); border-top: 4px solid var(--color-primary);">
+                <h3 style="color: var(--color-primary); margin-top: 0;">Aulas Teóricas</h3>
+                <p>As aulas teóricas consistirão em exposições dos conceitos fundamentais de arquitetura de computadores, complementadas com exemplos e ilustrações para facilitar a compreensão.</p>
+                <p>Serão utilizados recursos audiovisuais, como slides e vídeos, para apresentar diagramas de arquiteturas, funcionamento de circuitos e demonstrações de conceitos.</p>
+              </div>
+              
+              <div style="background-color: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); border-top: 4px solid var(--color-accent);">
+                <h3 style="color: var(--color-accent); margin-top: 0;">Aulas Práticas</h3>
+                <p>As aulas práticas envolverão exercícios de aplicação dos conceitos teóricos, incluindo:</p>
+                <ul style="padding-left: 1.2rem;">
+                  <li>Resolução de problemas de conversão de sistemas numéricos</li>
+                  <li>Simplificação de expressões booleanas</li>
+                  <li>Análise e projeto de circuitos lógicos simples</li>
+                  <li>Programação em linguagem Assembly</li>
+                  <li>Simulação de funcionamento de componentes de computador</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div style="background-color: var(--color-light); border-radius: 8px; padding: 1.5rem; margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+              <div>
+                <h3 style="color: var(--color-secondary); margin-top: 0;">Atividades de Estudo Independente</h3>
+                <ul style="padding-left: 1.2rem;">
+                  <li>Leitura de materiais complementares</li>
+                  <li>Pesquisas sobre tópicos específicos</li>
+                  <li>Resolução de exercícios adicionais</li>
+                  <li>Implementação de pequenos projetos</li>
+                </ul>
+              </div>
+              
+              <div>
+                <h3 style="color: var(--color-success); margin-top: 0;">Ferramentas de Apoio</h3>
+                <ul style="padding-left: 1.2rem;">
+                  <li>Simuladores de circuitos digitais</li>
+                  <li>Emuladores de processadores</li>
+                  <li>Ambientes de desenvolvimento para Assembly</li>
+                  <li>Plataforma de e-learning com materiais e exercícios</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div class="slide-footer">
+            <div class="teacher-info">Docente: Msc, Eng. Alberto Comé</div>
+            <div class="page-number">9/12</div>
+          </div>
+          </div>
+          
+          <!-- Slide 10: Estratégias de Avaliação Detalhadas -->
+          <div class="slide">
+          <div class="slide-header">
+            <div class="course-info">
+              <div class="course-title">Curso de Informática de Gestão</div>
+              <div class="course-subtitle">Disciplina de Arquitetura de Computadores I</div>
+            </div>
+            
+            <div class="logo-container">
+              <div class="logo-placeholder">ISGE-GM</div>
+            </div>
+          </div>
+          
+          <div class="slide-content">
+            <h2>Estratégias de Avaliação Detalhadas</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+              <div style="background-color: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);">
+                <h3 style="color: var(--color-primary); margin-top: 0;">Testes Escritos</h3>
+                <p><strong>Teste Formativo (Semana 4):</strong> Cobrirá os conteúdos das semanas 1-3, incluindo fundamentos de arquitetura, sistemas digitais e representação numérica.</p>
+                <p><strong>Teste Sumativo (Semana 8):</strong> Abrangerá todo o conteúdo da disciplina, com foco especial na aplicação prática dos conceitos.</p>
+              </div>
+              
+              <div style="background-color: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);">
+                <h3 style="color: var(--color-secondary); margin-top: 0;">Trabalho Escrito</h3>
+                <p>Os estudantes deverão realizar um trabalho de pesquisa sobre um tema específico da arquitetura de computadores, relacionando-o com aplicações práticas na área de informática de gestão.</p>
+                <p>O trabalho deverá incluir uma componente teórica de pesquisa bibliográfica e uma componente prática de análise ou implementação.</p>
+              </div>
+              
+              <div style="background-color: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);">
+                <h3 style="color: var(--color-accent); margin-top: 0;">Tarefas Práticas</h3>
+                <p>Serão atribuídas cinco tarefas práticas ao longo do semestre:</p>
+                <ol style="padding-left: 1.2rem;">
+                  <li>Conversão entre sistemas numéricos e aritmética binária</li>
+                  <li>Simplificação de expressões booleanas e projetos de circuitos</li>
+                  <li>Análise e projeto de componentes de computador</li>
+                  <li>Programação em linguagem Assembly - exercícios básicos</li>
+                  <li>Programação em Assembly - aplicação prática</li>
+                </ol>
+              </div>
+            </div>
+            
+            <div style="background-color: var(--color-primary-light); border-radius: 8px; padding: 1.5rem; margin-top: 1.5rem;">
+              <h3 style="color: var(--color-primary-dark); margin-top: 0;">Critérios de Avaliação</h3>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                <div>
+                  <h4 style="margin-top: 0;">Testes e Exames</h4>
+                  <ul style="padding-left: 1.2rem;">
+                    <li>Compreensão dos conceitos teóricos</li>
+                    <li>Capacidade de aplicação prática</li>
+                    <li>Precisão nas respostas</li>
+                    <li>Clareza na argumentação</li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h4 style="margin-top: 0;">Trabalho Escrito</h4>
+                  <ul style="padding-left: 1.2rem;">
+                    <li>Qualidade da pesquisa bibliográfica</li>
+                    <li>Profundidade da análise</li>
+                    <li>Originalidade e criatividade</li>
+                    <li>Estrutura e apresentação</li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h4 style="margin-top: 0;">Participação e Assiduidade</h4>
+                  <ul style="padding-left: 1.2rem;">
+                    <li>Presença regular nas aulas</li>
+                    <li>Participação ativa nas discussões</li>
+                    <li>Contribuição para o ambiente de aprendizagem</li>
+                    <li>Pontualidade na entrega de tarefas</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="slide-footer">
+            <div class="teacher-info">Docente: Msc, Eng. Alberto Comé</div>
+            <div class="page-number">10/12</div>
+          </div>
+          </div>
+          
+          <!-- Slide 11: Recursos e Ferramentas de Apoio -->
+          <div class="slide">
+          <div class="slide-header">
+            <div class="course-info">
+              <div class="course-title">Curso de Informática de Gestão</div>
+              <div class="course-subtitle">Disciplina de Arquitetura de Computadores I</div>
+            </div>
+            
+            <div class="logo-container">
+              <div class="logo-placeholder">ISGE-GM</div>
+            </div>
+          </div>
+          
+          <div class="slide-content">
+            <h2>Recursos e Ferramentas de Apoio</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+              <div style="background-color: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); border-left: 4px solid var(--color-primary);">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path></svg>
+                </div>
+                <h3 style="color: var(--color-primary); text-align: center; margin-top: 0;">Simuladores de Circuitos</h3>
+                <ul style="padding-left: 1.2rem;">
+                  <li><strong>Logisim:</strong> Simulador de circuitos digitais para desenho e teste de circuitos lógicos.</li>
+                  <li><strong>Digital Works:</strong> Ferramenta para design e simulação de circuitos digitais.</li>
+                  <li><strong>CircuitVerse:</strong> Plataforma online para simulação de circuitos lógicos.</li>
+                </ul>
+              </div>
+              
+              <div style="background-color: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); border-left: 4px solid var(--color-secondary);">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-secondary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                </div>
+                <h3 style="color: var(--color-secondary); text-align: center; margin-top: 0;">Emuladores de Assembly</h3>
+                <ul style="padding-left: 1.2rem;">
+                  <li><strong>MARS:</strong> MIPS Assembler and Runtime Simulator para aprendizado de Assembly MIPS.</li>
+                  <li><strong>emu8086:</strong> Emulador e compilador para microprocessadores Intel 8086.</li>
+                  <li><strong>SPIM:</strong> Simulador para código MIPS R2000/R3000 Assembly.</li>
+                </ul>
+              </div>
+              
+              <div style="background-color: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); border-left: 4px solid var(--color-accent);">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                </div>
+                <h3 style="color: var(--color-accent); text-align: center; margin-top: 0;">Ferramentas de Visualização</h3>
+                <ul style="padding-left: 1.2rem;">
+                  <li><strong>CPU Sim:</strong> Simulador educacional de CPU para visualizar ciclos de execução.</li>
+                  <li><strong>Visual 6502:</strong> Visualização interativa do funcionamento do processador 6502.</li>
+                  <li><strong>Computer Architecture Animations:</strong> Animações para visualizar conceitos de arquitetura.</li>
+                </ul>
+              </div>
+              
+              <div style="background-color: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); border-left: 4px solid var(--color-success);">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                </div>
+                <h3 style="color: var(--color-success); text-align: center; margin-top: 0;">Materiais Online</h3>
+                <ul style="padding-left: 1.2rem;">
+                  <li><strong>Platform LMS:</strong> Plataforma de aprendizagem do curso com materiais, exercícios e avaliações.</li>
+                  <li><strong>Repositório de Exercícios:</strong> Compilação de exercícios práticos com soluções para estudo independente.</li>
+                  <li><strong>Biblioteca Digital:</strong> Acesso a livros e artigos científicos na área de arquitetura de computadores.</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div style="background-color: var(--color-primary-light); border-radius: 8px; padding: 1.5rem; margin-top: 1.5rem;">
+              <h3 style="color: var(--color-primary-dark); margin-top: 0; text-align: center;">Política de Uso de Recursos</h3>
+              <p>Os estudantes são encorajados a utilizar todos os recursos disponíveis para aprofundar seu aprendizado. No entanto, é importante ressaltar que:</p>
+              <ul style="columns: 2; padding-left: 1.5rem;">
+                <li>O uso de simuladores não substitui a compreensão teórica dos conceitos</li>
+                <li>Os trabalhos devem ser originais e baseados em pesquisa própria</li>
+                <li>O compartilhamento de recursos entre colegas é encorajado, mas a cópia de trabalhos é proibida</li>
+                <li>A instalação de software em computadores pessoais é recomendada para prática adicional</li>
+                <li>O laboratório de informática estará disponível em horários específicos para uso dos recursos</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="slide-footer">
+            <div class="teacher-info">Docente: Msc, Eng. Alberto Comé</div>
+            <div class="page-number">11/12</div>
+          </div>
+          </div>
+          
+          <!-- Slide 12: Cronograma e Considerações Finais -->
+          <div class="slide">
+          <div class="slide-header">
+            <div class="course-info">
+              <div class="course-title">Curso de Informática de Gestão</div>
+              <div class="course-subtitle">Disciplina de Arquitetura de Computadores I</div>
+            </div>
+            
+            <div class="logo-container">
+              <div class="logo-placeholder">ISGE-GM</div>
+            </div>
+          </div>
+          
+          <div class="slide-content">
+            <h2>Cronograma e Considerações Finais</h2>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem;">
+              <div style="flex: 2; min-width: 300px; background-color: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);">
+                <h3 style="color: var(--color-primary); margin-top: 0;">Cronograma Semestral</h3>
+                
+                <div style="display: flex; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;">
+                  <div style="flex: 1; font-weight: bold;">Semanas</div>
+                  <div style="flex: 3; font-weight: bold;">Conteúdos e Atividades</div>
+                </div>
+                
+                <div style="display: flex; margin-bottom: 0.5rem;">
+                  <div style="flex: 1;">1-2</div>
+                  <div style="flex: 3;">Introdução à Arquitetura de Computadores; Componentes de um Computador</div>
+                </div>
+                
+                <div style="display: flex; margin-bottom: 0.5rem;">
+                  <div style="flex: 1;">3-4</div>
+                  <div style="flex: 3;">Sistemas Digitais; Representação de Números; <strong>Teste Formativo (Semana 4)</strong></div>
+                </div>
+                
+                <div style="display: flex; margin-bottom: 0.5rem;">
+                  <div style="flex: 1;">5-6</div>
+                  <div style="flex: 3;">Álgebra Booleana; Estrutura e Função das Instruções de Máquina</div>
+                </div>
+                
+                <div style="display: flex; margin-bottom: 0.5rem;">
+                  <div style="flex: 1;">7-8</div>
+                  <div style="flex: 3;">Programação em Assembly; <strong>Teste Sumativo (Semana 8)</strong></div>
+                </div>
+                
+                <div style="display: flex; margin-bottom: 0.5rem;">
+                  <div style="flex: 1;">9-10</div>
+                  <div style="flex: 3;">Aplicações Práticas; <strong>Entrega do Trabalho Escrito</strong></div>
+                </div>
+                
+                <div style="display: flex; margin-bottom: 0.5rem;">
+                  <div style="flex: 1;">11-12</div>
+                  <div style="flex: 3;">Revisão Geral; Preparação para Exame Final</div>
+                </div>
+                
+                <div style="display: flex; margin-top: 1rem; padding-top: 0.5rem; border-top: 1px solid #e2e8f0;">
+                  <div style="flex: 1; font-weight: bold;">Final</div>
+                  <div style="flex: 3;"><strong>Exame Normal e Exame de Recorrência</strong> (datas a definir)</div>
+                </div>
+              </div>
+              
+          
+                
+                <h3 style="color: var(--color-accent); margin-top: 1.5rem;">Contactos</h3>
+                <p><strong>Email:</strong> albertoscome@isgegm.ac.mz</p>
+              </div>
+            </div>
+            
+            <div style="background-color: var(--color-primary-light); border-radius: 8px; padding: 1.5rem; margin-top: 1.5rem; text-align: center;">
+              <h3 style="color: var(--color-primary-dark); margin-top: 0;">Considerações Finais</h3>
+              <p>A disciplina de Arquitetura de Computadores I é fundamental para a formação em Informática de Gestão, fornecendo bases essenciais para compreender o funcionamento interno dos sistemas computacionais.</p>
+              <p>Os estudantes são incentivados a manterem uma participação ativa, realizarem as leituras recomendadas e praticarem com os exercícios e simuladores disponibilizados.</p>
+              <p>O sucesso nesta disciplina depende tanto da compreensão teórica quanto da capacidade de aplicação prática dos conceitos aprendidos.</p>
+              <p style="font-weight: bold; margin-top: 1rem;">Desejamos a todos um excelente semestre de aprendizado!</p>
+              
+              <div style="margin-top: 1.5rem; font-style: italic; color: var(--color-gray);">
+                <p>Plano Analítico aprovado pelo Departamento Pedagógico em ___/___/2025</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="slide-footer">
+            <div class="teacher-info">Docente: Msc, Eng. Alberto Comé</div>
+            <div class="page-number">12/12</div>
+          </div>
+          </div>
