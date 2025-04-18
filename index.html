@@ -1,983 +1,894 @@
 <!DOCTYPE html>
-<html lang="pt-MZ">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aula Prática - Modelo OSI/TCP/IP</title>
+    <title>Simulação CPU e RAM - Ciclo FDX</title>
     <style>
-        body, html {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
+            background-color: #f0f0f0;
             color: #333;
-        }
-        
-        .slide {
-            max-width: 1000px;
-            margin: 20px auto;
-            background-color: white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            page-break-after: always;
-            min-height: 600px;
-            position: relative;
+            padding-bottom: 60px; /* Espaço para o footer fixo */
         }
         
         .header {
-            background-color: #8FBC8F;
+            background-color: #1a3057;
             color: white;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 5px solid #2F4F4F;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        .content {
-            padding: 20px;
-            min-height: 450px;
+        .header-content {
+            text-align: left;
+        }
+        
+        .header-content h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+        
+        .header-content h2 {
+            margin: 5px 0 0 0;
+            font-size: 16px;
+            font-weight: normal;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: gold;
+        }
+        
+        .professor {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+            font-style: italic;
+        }
+        
+        .title {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
         }
         
         .footer {
-            position: relative;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #8FBC8F;
+            background-color: #1a3057;
             color: white;
-            padding: 10px 20px;
             text-align: center;
+            padding: 10px;
             font-size: 14px;
-            border-top: 3px solid #2F4F4F;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .component-desc, .register-desc, .bus-desc {
+            display: none;
+            background-color: #fff8dc;
+            border: 1px solid #ffd700;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+        
+        .component:hover .component-desc, 
+        .register:hover .register-desc,
+        .barramento:hover .bus-desc {
+            display: block;
+        }
+        
+        .definitions {
+            background-color: #f9f9f9;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 800px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .concept {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .concept h4 {
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        
+        .concept p {
+            margin-top: 5px;
+        }
+        
+        .concept ul {
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+        
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .cpu-container, .ram-container {
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+        }
+        
+        .cpu-container {
+            width: 60%;
+            background-color: #e6f7ff;
+        }
+        
+        .ram-container {
+            width: 30%;
+            background-color: #fff8e6;
+        }
+        
+        .title {
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .component {
+            border: 2px solid #666;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: center;
+            position: relative;
+            background-color: white;
+            transition: background-color 0.3s;
+        }
+        
+        .unit {
             display: flex;
             justify-content: space-between;
         }
         
-        h1, h2, h3 {
-            margin-top: 0;
-            color: #2F4F4F;
+        .uc {
+            width: 45%;
+            background-color: #d4edda;
+            border-color: #28a745;
         }
         
-        .logo {
-            text-align: center;
-            margin-bottom: 20px;
+        .ula {
+            width: 45%;
+            background-color: #cce5ff;
+            border-color: #007bff;
         }
         
-        .step {
-            background-color: #f8f8f8;
-            border-left: 4px solid #8FBC8F;
-            padding: 10px 15px;
-            margin-bottom: 15px;
+        .registers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
         }
         
-        .step-number {
-            background-color: #8FBC8F;
-            color: white;
-            display: inline-block;
-            width: 25px;
-            height: 25px;
-            text-align: center;
-            border-radius: 50%;
-            margin-right: 10px;
+        .register {
+            width: 30%;
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        
+        .register-value {
             font-weight: bold;
+            color: #007bff;
         }
         
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-        }
-        
-        table, th, td {
+        .memory-address {
+            display: flex;
+            margin-bottom: 5px;
             border: 1px solid #ddd;
         }
         
-        th {
-            background-color: #8FBC8F;
-            color: white;
-            padding: 10px;
+        .address {
+            width: 40%;
+            padding: 5px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #ddd;
+            text-align: center;
         }
         
-        td {
-            padding: 8px;
-            text-align: left;
+        .value {
+            width: 60%;
+            padding: 5px;
+            text-align: center;
         }
         
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
+        .barramentos {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
         }
         
-        .image-container {
+        .barramento {
+            width: 30%;
+            height: 20px;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            text-align: center;
+            line-height: 20px;
+            font-size: 0.8em;
+        }
+        
+        #data-bus-animation {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            display: none;
+        }
+        
+        .controls {
             text-align: center;
             margin: 20px 0;
         }
         
-        .image-container img {
-            max-width: 100%;
-            max-height: 300px;
-            border: 1px solid #ddd;
-        }
-        
-        .highlight {
-            background-color: #E3F2E3;
-            padding: 10px;
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
             border-radius: 5px;
-            margin: 10px 0;
+            cursor: pointer;
         }
         
-        ul, ol {
-            padding-left: 20px;
+        button:hover {
+            background-color: #0056b3;
         }
         
-        li {
-            margin-bottom: 8px;
+        .active {
+            background-color: #ffec99 !important;
+            border-color: #ffc107 !important;
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);
         }
-
-        /* Estilos para impressão */
-        @media print {
-            .slide {
-                page-break-after: always;
-                margin: 0;
-                box-shadow: none;
-            }
+        
+        .description {
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 800px;
+        }
+        
+        .highlight-text {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 15px solid #007bff;
+        }
+        
+        .step-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .data-flow {
+            position: absolute;
+            height: 3px;
+            background-color: #ff5722;
+            transition: width 0.5s;
         }
     </style>
 </head>
 <body>
-    <!-- Slide 1 -->
-    <div class="slide">
-        <div class="header">
-            <h2>INSTITUTO SUPERIOR DE GESTÃO E EMPREENDEDORISMO GWAZA MUTHINI</h2>
-            <h3>CURSO DE INFORMÁTICA DE GESTÃO</h3>
+    <div class="header">
+        <div class="header-content">
+            <h1>Curso de Informática de Gestão</h1>
+            <h2>Disciplina de Arquitetura de Computadores I</h2>
         </div>
-        <div class="content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: calc(100% - 100px);">
-            <h1 style="text-align: center; font-size: 32px; margin-bottom: 30px;">AULA PRÁTICA: MODELO OSI/TCP/IP</h1>
-            <h2 style="text-align: center; color: #2F4F4F; margin-top: 30px;">ARQUITECTURA DE COMPUTADORES I</h2>
-            <div style="margin-top: 50px;">
-                <h3 style="text-align: center;">O Regente: Msc, Eng. Alberto Come</h3>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Instituto Superior de Gestão e Empreendedorismo Gwaza Muthini</div>
-            <div>25.03.2025</div>
-        </div>
+        <div class="logo">ISGE-GM</div>
     </div>
     
-    <!-- Slide 2 -->
-    <div class="slide">
-        <div class="header">
-            <h2>OBJECTIVOS DA AULA PRÁTICA</h2>
-        </div>
-        <div class="content">
-            <ul>
-                <li>Compreender o funcionamento prático do modelo OSI e TCP/IP</li>
-                <li>Aprender a utilizar o Cisco Packet Tracer para simulações de rede</li>
-                <li>Analisar a comunicação entre dispositivos em cada camada dos modelos</li>
-                <li>Desenvolver habilidades práticas de configuração e resolução de problemas de redes</li>
-                <li>Visualizar o encapsulamento de dados através das diferentes camadas</li>
-                <li>Identificar e resolver problemas comuns em cada camada do modelo OSI</li>
-            </ul>
+    <div class="professor">
+        "As grandes revoluções começam com o entendimento das pequenas peças. Conhecer os componentes de um computador é o primeiro passo para transformar o mundo" Autor: Desconhecido
+    </div>
+    
+    <div class="title">TEMA:CICLOS DE BUSCA DE UMA INSTRUÇÃO</div>
+    
+    <div class="controls">
+        <button id="nextStep">Próximo Passo</button>
+        <button id="reset">Reiniciar</button>
+        <button id="auto">Modo Automático</button>
+    </div>
+    
+    <div class="step-counter">Passo: <span id="stepDisplay">0</span></div>
+    
+    <div class="container">
+        <div class="cpu-container">
+            <h2 class="title">CPU</h2>
             
-            <div class="highlight">
-                <h3>Resultados Esperados</h3>
-                <p>Ao final desta aula prática, os estudantes serão capazes de:</p>
-                <ul>
-                    <li>Configurar redes básicas no Packet Tracer</li>
-                    <li>Identificar em qual camada ocorrem determinados problemas de rede</li>
-                    <li>Analisar pacotes de dados e identificar os cabeçalhos correspondentes a cada camada</li>
-                    <li>Correlacionar o modelo OSI com o TCP/IP em situações práticas</li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
-        </div>
-    </div>
-    
-    <!-- Slide 3 -->
-    <div class="slide">
-        <div class="header">
-            <h2>REVISÃO: MODELOS OSI E TCP/IP</h2>
-        </div>
-        <div class="content">
-            <div style="display: flex; justify-content: space-around;">
-                <div style="width: 45%;">
-                    <h3>Modelo OSI</h3>
-                    <ol reversed>
-                        <li><strong>Aplicação</strong> - Interface com utilizador e aplicativos</li>
-                        <li><strong>Apresentação</strong> - Formatação de dados, encriptação</li>
-                        <li><strong>Sessão</strong> - Estabelecimento e gestão de sessões</li>
-                        <li><strong>Transporte</strong> - Controlo de fluxo, segmentação</li>
-                        <li><strong>Rede</strong> - Encaminhamento, endereçamento lógico</li>
-                        <li><strong>Enlace</strong> - Endereçamento físico, acesso ao meio</li>
-                        <li><strong>Física</strong> - Transmissão de bits, sinais eléctricos</li>
-                    </ol>
+            <div class="unit">
+                <div class="component uc" id="uc">
+                    <h3>Unidade de Controle (UC)</h3>
+                    <p>Decodifica instruções e coordena operações</p>
+                    <div class="component-desc" id="uc-desc">
+                        Componente que coordena todas as actividades da CPU. Recebe instruções do IR, 
+                        decodifica-as e gera sinais de controle para direcionar o fluxo de dados dentro 
+                        da CPU e com outros componentes do sistema.
+                    </div>
                 </div>
-                <div style="width: 45%;">
-                    <h3>Modelo TCP/IP</h3>
-                    <ol reversed>
-                        <li><strong>Aplicação</strong> - Combina camadas 5, 6 e 7 do OSI</li>
-                        <li><strong>Transporte</strong> - TCP, UDP (equivalente à camada 4 do OSI)</li>
-                        <li><strong>Internet</strong> - IP (equivalente à camada 3 do OSI)</li>
-                        <li><strong>Acesso à Rede</strong> - Combina camadas 1 e 2 do OSI</li>
-                    </ol>
-                    <div class="highlight" style="margin-top: 20px;">
-                        <p><strong>Importante:</strong> As camadas 1 e 2 do modelo OSI correspondem à camada de Acesso à Rede do modelo TCP/IP. Já as camadas 5, 6 e 7 do modelo OSI correspondem à camada de Aplicação do TCP/IP.</p>
+                
+                <div class="component ula" id="ula">
+                    <h3>ULA</h3>
+                    <p>Realiza operações aritméticas e lógicas</p>
+                    <div id="ula-operation"></div>
+                    <div class="component-desc" id="ula-desc">
+                        Componente responsável por realizar todas as operações aritméticas 
+                        (soma, subtração, multiplicação, divisão) e lógicas (AND, OR, NOT, XOR). 
+                        Recebe dados dos registradores e retorna os resultados.
                     </div>
                 </div>
             </div>
             
-            <div class="image-container">
-                <img src="/api/placeholder/600/300" alt="Comparação entre Modelo OSI e TCP/IP">
+            <h3>Registradores</h3>
+            <div class="registers">
+                <div class="component register" id="pc">
+                    <h4>PC (Contador de Programa)</h4>
+                    <div class="register-value" id="pc-value">0</div>
+                    <div class="register-desc">
+                        Contém o endereço da próxima instrução a ser buscada na memória. 
+                        Após cada busca, é incrementado automaticamente para apontar para a próxima instrução.
+                    </div>
+                </div>
+                
+                <div class="component register" id="ir">
+                    <h4>IR (Registrador de Instrução)</h4>
+                    <div class="register-value" id="ir-value">--</div>
+                    <div class="register-desc">
+                        Armazena temporariamente a instrução atualmente sendo decodificada e executada. 
+                        A UC examina seu conteúdo para determinar qual operação realizar.
+                    </div>
+                </div>
+                
+                <div class="component register" id="rem">
+                    <h4>REM (Reg. de Endereço de Memória)</h4>
+                    <div class="register-value" id="rem-value">--</div>
+                    <div class="register-desc">
+                        Armazena o endereço da posição de memória que será acessada. 
+                        Seu conteúdo é colocado no barramento de endereços.
+                    </div>
+                </div>
+                
+                <div class="component register" id="rdm">
+                    <h4>RDM (Reg. de Dados de Memória)</h4>
+                    <div class="register-value" id="rdm-value">--</div>
+                    <div class="register-desc">
+                        Interface entre CPU e memória para transferência de dados. 
+                        Recebe dados da memória (leitura) ou contém dados para a memória (escrita).
+                    </div>
+                </div>
+                
+                <div class="component register" id="acc">
+                    <h4>ACC (Acumulador)</h4>
+                    <div class="register-value" id="acc-value">0</div>
+                    <div class="register-desc">
+                        Registrador especial que armazena resultados intermediários e finais das operações da ULA.
+                        É o registrador padrão para operações aritméticas.
+                    </div>
+                </div>
+                
+                <div class="component register" id="reg-b">
+                    <h4>Reg B (Temporário)</h4>
+                    <div class="register-value" id="reg-b-value">--</div>
+                    <div class="register-desc">
+                        Registrador temporário utilizado para armazenar o segundo operando 
+                        de uma operação da ULA. Trabalha em conjunto com o acumulador.
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Barramentos</h3>
+            <div class="barramentos">
+                <div class="barramento" id="address-bus">Barramento de Endereço
+                    <div class="bus-desc">
+                        Canal unidirecional que transporta os endereços de memória da CPU para a memória.
+                        Sua largura determina a quantidade máxima de memória endereçável.
+                    </div>
+                </div>
+                <div class="barramento" id="data-bus">Barramento de Dados
+                    <div class="bus-desc">
+                        Canal bidirecional que transporta dados entre a CPU e outros componentes.
+                        Sua largura determina a quantidade de dados transferidos por operação.
+                    </div>
+                </div>
+                <div class="barramento" id="control-bus">Barramento de Controle
+                    <div class="bus-desc">
+                        Conjunto de linhas de sinal que transportam comandos da UC 
+                        para controlar o funcionamento dos demais componentes.
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
-        </div>
-    </div>
-    
-    <!-- Slide 4 -->
-    <div class="slide">
-        <div class="header">
-            <h2>INTRODUÇÃO AO PACKET TRACER</h2>
-        </div>
-        <div class="content">
-            <p>O Cisco Packet Tracer é uma ferramenta de simulação de rede que permite aos estudantes experimentar comportamentos de rede e explorar cenários de configuração.</p>
+        
+        <div class="ram-container">
+            <h2 class="title">Memória RAM</h2>
             
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Iniciar o Packet Tracer</strong>
-                <p>Abra o programa Cisco Packet Tracer a partir do menu iniciar ou ambiente de trabalho.</p>
+            <div class="memory">
+                <div class="memory-address" id="address-0">
+                    <div class="address">Endereço 0</div>
+                    <div class="value" id="value-0">LOAD [2]</div>
+                </div>
+                
+                <div class="memory-address" id="address-1">
+                    <div class="address">Endereço 1</div>
+                    <div class="value" id="value-1">ADD [3]</div>
+                </div>
+                
+                <div class="memory-address" id="address-2">
+                    <div class="address">Endereço 2</div>
+                    <div class="value" id="value-2">1</div>
+                </div>
+                
+                <div class="memory-address" id="address-3">
+                    <div class="address">Endereço 3</div>
+                    <div class="value" id="value-3">4</div>
+                </div>
+                
+                <div class="memory-address" id="address-4">
+                    <div class="address">Endereço 4</div>
+                    <div class="value" id="value-4">STORE [5]</div>
+                </div>
+                
+                <div class="memory-address" id="address-5">
+                    <div class="address">Endereço 5</div>
+                    <div class="value" id="value-5">--</div>
+                </div>
+                
+                <div class="memory-address" id="address-6">
+                    <div class="address">Endereço 6</div>
+                    <div class="value" id="value-6">HALT</div>
+                </div>
             </div>
-            
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Interface do Packet Tracer</strong>
-                <ul>
-                    <li><strong>Painel de dispositivos:</strong> Localizado à esquerda, contém todos os dispositivos disponíveis</li>
-                    <li><strong>Área de trabalho:</strong> Espaço central onde a topologia de rede é construída</li>
-                    <li><strong>Modos:</strong> Tempo real (Realtime) e Simulação (Simulation)</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Adicionar dispositivos</strong>
-                <p>Clique na categoria de dispositivo desejada (encaminhadores, comutadores, PCs, etc.) e arraste o dispositivo para a área de trabalho.</p>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Conectar dispositivos</strong>
-                <p>Clique no ícone de conexão, seleccione o tipo de cabo apropriado e conecte os dispositivos clicando primeiro em um e depois no outro.</p>
-            </div>
-            
-            <div class="highlight">
-                <p><strong>Dica:</strong> Pode alternar entre o modo de tempo real e o modo de simulação usando o botão localizado no canto inferior direito da interface. O modo de simulação é essencial para visualizar o fluxo de pacotes através das camadas OSI.</p>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
-        </div>
-    </div>
-    
-    <!-- Slide 5 -->
-    <div class="slide">
-        <div class="header">
-            <h2>PRÁTICA 1: CAMADAS FÍSICA E DE ENLACE</h2>
-        </div>
-        <div class="content">
-            <h3>Configuração da Topologia</h3>
-            
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Adicione dois PCs à área de trabalho</strong>
-                <p>Seleccione End Devices > PC-PT e arraste dois para a área de trabalho</p>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Conecte os PCs com um cabo directo (straight-through)</strong>
-                <p>Clique no ícone de conexões > Copper Straight-Through > Clique no primeiro PC e depois no segundo</p>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Configure endereços IP para os PCs</strong>
-                <ul>
-                    <li>Clique no PC > guia Desktop > IP Configuration</li>
-                    <li>Para PC0: IP: 192.168.1.1, Máscara: 255.255.255.0</li>
-                    <li>Para PC1: IP: 192.168.1.2, Máscara: 255.255.255.0</li>
-                </ul>
-            </div>
-            
-            <h3>Teste da Camada Física</h3>
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Verifique o estado da conexão física</strong>
-                <p>Observe as luzes de link nas interfaces dos PCs. Verde indica conexão estabelecida.</p>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">5</span>
-                <strong>Experimente diferentes tipos de cabos</strong>
-                <p>Substitua o cabo directo por um cabo cruzado (crossover) e observe se há diferença.</p>
-            </div>
-            
-            <h3>Teste da Camada de Enlace</h3>
-            <div class="step">
-                <span class="step-number">6</span>
-                <strong>Visualize os endereços MAC</strong>
-                <p>Clique em cada PC > Command Prompt > Digite <code>ipconfig /all</code> para ver o endereço MAC</p>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
-        </div>
-    </div>
-    
-    <!-- Slide 6 -->
-    <div class="slide">
-        <div class="header">
-            <h2>PRÁTICA 1: ANÁLISE DE PACOTES (FÍSICA E ENLACE)</h2>
-        </div>
-        <div class="content">
-            <h3>Análise dos Pacotes em Modo de Simulação</h3>
-            
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Entre no modo de simulação</strong>
-                <p>Clique no botão "Simulation" no canto inferior direito do ecrã</p>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Configure os filtros para visualizar os pacotes relevantes</strong>
-                <p>Clique em "Edit Filters" e seleccione apenas os protocolos que deseja visualizar (ARP, ICMP)</p>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Envie um pacote de um PC para outro</strong>
-                <p>Em um dos PCs, abra o Command Prompt e digite <code>ping 192.168.1.2</code> (ou o IP do outro PC)</p>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Observe o processo ARP (Address Resolution Protocol)</strong>
-                <p>Antes que o ping ICMP seja enviado, observe o pacote ARP que é usado para descobrir o endereço MAC do destinatário</p>
-                <ul>
-                    <li>Clique no pacote ARP durante a simulação</li>
-                    <li>Analise o cabeçalho do quadro Ethernet (Camada 2)</li>
-                    <li>Observe os endereços MAC de origem e destino</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">5</span>
-                <strong>Análise do quadro de dados</strong>
-                <p>Após o ARP, observe o pacote ICMP (ping) sendo encapsulado em um quadro Ethernet</p>
-                <ul>
-                    <li>Note o preâmbulo Ethernet (início do quadro)</li>
-                    <li>Observe o campo de verificação de erros (FCS - Frame Check Sequence)</li>
-                </ul>
-            </div>
-            
-            <div class="highlight">
-                <p><strong>Importante:</strong> Nestes testes, estamos a observar principalmente a Camada 1 (sinais e conexões físicas) e a Camada 2 (endereçamento MAC e quadros Ethernet) do modelo OSI.</p>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
         </div>
     </div>
     
-    <!-- Slide 7 -->
-    <div class="slide">
-        <div class="header">
-            <h2>PRÁTICA 2: CAMADA DE REDE</h2>
-        </div>
-        <div class="content">
-            <h3>Configuração da Topologia com Encaminhador (Router)</h3>
-            
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Crie uma nova topologia com um encaminhador e dois PCs</strong>
-                <ul>
-                    <li>Adicione um encaminhador (Routers > 1841)</li>
-                    <li>Adicione dois PCs (End Devices > PC-PT)</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Conecte os dispositivos</strong>
-                <ul>
-                    <li>Use cabos directos (Copper Straight-Through) para conectar cada PC ao encaminhador</li>
-                    <li>PC0 ao FastEthernet0/0 do encaminhador</li>
-                    <li>PC1 ao FastEthernet0/1 do encaminhador</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Configure o encaminhador</strong>
-                <p>Clique no encaminhador > guia CLI e digite os seguintes comandos:</p>
-                <pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;">
-Router>enable
-Router#configure terminal
-Router(config)#interface FastEthernet0/0
-Router(config-if)#ip address 192.168.1.1 255.255.255.0
-Router(config-if)#no shutdown
-Router(config-if)#exit
-Router(config)#interface FastEthernet0/1
-Router(config-if)#ip address 192.168.2.1 255.255.255.0
-Router(config-if)#no shutdown
-Router(config-if)#exit
-Router(config)#exit
-Router#write memory
-                </pre>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Configure os PCs em subredes diferentes</strong>
-                <ul>
-                    <li>PC0: IP: 192.168.1.10, Máscara: 255.255.255.0, Gateway: 192.168.1.1</li>
-                    <li>PC1: IP: 192.168.2.10, Máscara: 255.255.255.0, Gateway: 192.168.2.1</li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
-        </div>
+    <div class="description" id="step-description">
+        <h3>Ciclo FDX (Fetch-Decode-Execute)</h3>
+        <p>Clique em "Próximo Passo" para iniciar a simulação do processamento da soma 1+4.</p>
     </div>
     
-    <!-- Slide 8 -->
-    <div class="slide">
-        <div class="header">
-            <h2>PRÁTICA 2: TESTE DA CAMADA DE REDE</h2>
-        </div>
-        <div class="content">
-            <h3>Testando a Comunicação Entre Subredes</h3>
-            
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Verifique a conectividade local</strong>
-                <p>Em cada PC, faça ping para o seu respectivo gateway:</p>
-                <ul>
-                    <li>Em PC0: <code>ping 192.168.1.1</code></li>
-                    <li>Em PC1: <code>ping 192.168.2.1</code></li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Teste a comunicação entre subredes</strong>
-                <p>Em PC0, faça ping para PC1:</p>
-                <ul>
-                    <li><code>ping 192.168.2.10</code></li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Observe a rota</strong>
-                <p>Execute o comando <code>tracert 192.168.2.10</code> em PC0 para ver a rota que o pacote percorre</p>
-            </div>
-            
-            <h3>Análise no Modo de Simulação</h3>
-            
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Active o modo de simulação</strong>
-                <p>Clique no botão "Simulation" e configure os filtros para mostrar ICMP e IP</p>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">5</span>
-                <strong>Envie um pacote e observe o processo</strong>
-                <p>Faça ping novamente e observe cada etapa do processo:</p>
-                <ul>
-                    <li>Observe o pacote ICMP sendo encapsulado em um pacote IP</li>
-                    <li>Note que o destino do quadro Ethernet é o gateway (encaminhador)</li>
-                    <li>Observe o encaminhador recebendo o pacote, desencapsulando, verificando a tabela de encaminhamento e reencapsulando para a nova subrede</li>
-                    <li>Veja o novo quadro Ethernet sendo criado com o endereço MAC do PC de destino</li>
-                </ul>
-            </div>
-            
-            <div class="highlight">
-                <p><strong>Importante:</strong> Nesta prática estamos a observar principalmente a Camada 3 (Rede) do modelo OSI, que corresponde à camada Internet do modelo TCP/IP. Observe como o encaminhador toma decisões baseadas nos endereços IP (endereçamento lógico).</p>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
-        </div>
-    </div>
-    
-    <!-- Slide 9 -->
-    <div class="slide">
-        <div class="header">
-            <h2>PRÁTICA 3: CAMADA DE TRANSPORTE</h2>
-        </div>
-        <div class="content">
-            <h3>Configuração de Servidor e Clientes</h3>
-            
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Adicione um servidor à topologia</strong>
-                <p>Seleccione End Devices > Server-PT e adicione-o à rede</p>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Conecte o servidor ao encaminhador</strong>
-                <p>Use um cabo directo para conectar o servidor à interface FastEthernet0/1 do encaminhador</p>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Configure o endereço IP do servidor</strong>
-                <p>Clique no servidor > guia Config > Interface > FastEthernet > Configure:</p>
-                <ul>
-                    <li>IP: 192.168.2.20</li>
-                    <li>Subnet Mask: 255.255.255.0</li>
-                    <li>Default Gateway: 192.168.2.1</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Configure serviços no servidor</strong>
-                <p>Clique no servidor > guia Services e habilite os seguintes serviços:</p>
-                <ul>
-                    <li>HTTP: On (porta 80)</li>
-                    <li>FTP: On (porta 21)</li>
-                    <li>DNS: On (porta 53)</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">5</span>
-                <strong>Configure o serviço HTTP</strong>
-                <ul>
-                    <li>Na guia Services > HTTP, adicione uma página HTML simples</li>
-                    <li>Clique em "index.html" e adicione código HTML básico, como:</li>
-                </ul>
-                <pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px;">
-&lt;html&gt;
-&lt;head&gt;
-    &lt;title&gt;Teste da Camada de Transporte&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;h1&gt;Página de Teste - Modelo OSI&lt;/h1&gt;
-    &lt;p&gt;Esta página demonstra a camada de transporte e aplicação&lt;/p&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-                </pre>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
-        </div>
-    </div>
-    
-     <!-- Continuação do Slide 10 -->
-     <div class="slide">
-        <div class="header">
-            <h2>PRÁTICA 3: TESTE DA CAMADA DE TRANSPORTE (CONTINUAÇÃO)</h2>
-        </div>
-        <div class="content">
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Analise os cabeçalhos TCP</strong>
-                <p>Clique em um dos pacotes TCP e examine:</p>
-                <ul>
-                    <li>Porta de origem e porta de destino (80 para HTTP)</li>
-                    <li>Número de sequência e número de confirmação</li>
-                    <li>Flags TCP (SYN, ACK, FIN, etc.)</li>
-                    <li>Tamanho da janela (controlo de fluxo)</li>
-                    <li>Checksum (verificação de erros)</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">5</span>
-                <strong>Observe a transferência de dados</strong>
-                <p>Após o handshake, observe os pacotes HTTP sendo transmitidos:</p>
-                <ul>
-                    <li>Requisição HTTP GET do cliente</li>
-                    <li>Resposta HTTP do servidor com código 200 (OK)</li>
-                    <li>Observe como os dados são segmentados em múltiplos pacotes TCP, se a página for grande</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">6</span>
-                <strong>Teste o serviço FTP</strong>
-                <p>Em PC0, tente aceder ao servidor FTP:</p>
-                <ul>
-                    <li>Desktop > Command Prompt</li>
-                    <li>Digite: <code>ftp 192.168.2.20</code></li>
-                    <li>Use nome de utilizador "cisco" e senha "cisco"</li>
-                </ul>
-            </div>
-            
-            <div class="highlight">
-                <p><strong>Importante:</strong> Esta prática demonstra a Camada 4 (Transporte) do modelo OSI, que corresponde à camada de Transporte do modelo TCP/IP. Observe como TCP e UDP operam de forma diferente: TCP é orientado à conexão (handshake) e garante entrega fiável, enquanto UDP é mais simples e sem conexão.</p>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
-        </div>
-    </div>
-    
-    <!-- Slide 11 -->
-    <div class="slide">
-        <div class="header">
-            <h2>PRÁTICA 4: CAMADAS SUPERIORES (SESSÃO, APRESENTAÇÃO, APLICAÇÃO)</h2>
-        </div>
-        <div class="content">
-            <h3>Configuração para DNS e Serviços de Aplicação</h3>
-            
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Configure o serviço DNS no servidor</strong>
-                <p>No servidor, configure o DNS para associar um nome ao endereço IP:</p>
-                <ul>
-                    <li>Clique no servidor > guia Services > DNS</li>
-                    <li>Adicione um registo de host: Name: "servidor", Address: 192.168.2.20</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Configure o cliente para usar o servidor DNS</strong>
-                <p>Em PC0, defina o servidor DNS:</p>
-                <ul>
-                    <li>Desktop > IP Configuration</li>
-                    <li>Adicione 192.168.2.20 como servidor DNS</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Adicione mais conteúdo ao servidor web</strong>
-                <p>No servidor, adicione outra página HTML com conteúdo mais complexo:</p>
-                <ul>
-                    <li>Services > HTTP</li>
-                    <li>Adicione uma nova página, ex: "formatacao.html"</li>
-                    <li>Adicione conteúdo com diferentes formatações (tabelas, imagens, etc.)</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Configure um serviço de correio electrónico (SMTP/POP3)</strong>
-                <p>No servidor:</p>
-                <ul>
-                    <li>Services > EMAIL</li>
-                    <li>Crie uma conta: Domain Name: "servidor.local", User Name: "admin"</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">5</span>
-                <strong>Configure clientes de correio electrónico nos PCs</strong>
-                <p>Em PC0 e PC1:</p>
-                <ul>
-                    <li>Desktop > Email</li>
-                    <li>Configure: Your Name, Email, Server (192.168.2.20)</li>
-                </ul>
-            </div>
-            
-            <div class="highlight">
-                <p><strong>Nota:</strong> As camadas superiores (5-Sessão, 6-Apresentação e 7-Aplicação) do modelo OSI são combinadas na camada de Aplicação do modelo TCP/IP. Estas camadas lidam com a interacção do utilizador, formatação de dados e gestão de sessões.</p>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
-        </div>
-    </div>
-    
-    <!-- Slide 12 -->
-    <div class="slide">
-        <div class="header">
-            <h2>PRÁTICA 4: TESTE DAS CAMADAS SUPERIORES</h2>
-        </div>
-        <div class="content">
-            <h3>Teste de Serviços DNS e Web</h3>
-            
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Teste a resolução de nomes DNS</strong>
-                <p>Em PC0:</p>
-                <ul>
-                    <li>Command Prompt > Digite: <code>nslookup servidor</code></li>
-                    <li>Verifique se o nome "servidor" é resolvido para o IP 192.168.2.20</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Acesse o servidor web usando o nome DNS</strong>
-                <p>Em PC0:</p>
-                <ul>
-                    <li>Web Browser > Digite: "servidor" ou "http://servidor"</li>
-                    <li>Observe que a página é carregada usando o nome em vez do IP</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Observe o processo no modo de simulação</strong>
-                <p>Active o modo de simulação e observe:</p>
-                <ul>
-                    <li>Pacotes DNS (UDP porta 53) para resolução de nomes</li>
-                    <li>Seguidos pelos pacotes HTTP/TCP após a resolução</li>
-                </ul>
-            </div>
-            
-            <h3>Teste do Serviço de Correio Electrónico</h3>
-            
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Envie um correio electrónico entre os PCs</strong>
-                <p>Em PC0:</p>
-                <ul>
-                    <li>Desktop > Email > Compose</li>
-                    <li>To: usuario@servidor.local (de PC1)</li>
-                    <li>Subject: Teste de camada de aplicação</li>
-                    <li>Corpo: Mensagem de teste para verificar o protocolo SMTP</li>
-                    <li>Clique em "Send"</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">5</span>
-                <strong>Receba o correio electrónico no outro PC</strong>
-                <p>Em PC1:</p>
-                <ul>
-                    <li>Desktop > Email > "Receive"</li>
-                    <li>Verifique se o correio electrónico foi recebido</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">6</span>
-                <strong>Analise os protocolos no modo de simulação</strong>
-                <p>Observe:</p>
-                <ul>
-                    <li>SMTP (porta 25) para envio de correio electrónico</li>
-                    <li>POP3 (porta 110) para recebimento de correio electrónico</li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
-        </div>
-    </div>
-    
-    <!-- Slide 13 -->
-    <div class="slide">
-        <div class="header">
-            <h2>PRÁTICA 5: RESOLUÇÃO DE PROBLEMAS COM O MODELO OSI</h2>
-        </div>
-        <div class="content">
-            <h3>Simulação de Problemas em Cada Camada</h3>
-            
-            <div class="step">
-                <span class="step-number">1</span>
-                <strong>Problemas na Camada Física (1)</strong>
-                <p>Simule um problema físico:</p>
-                <ul>
-                    <li>Desconecte um cabo entre dispositivos</li>
-                    <li>Tente fazer ping e observe o erro</li>
-                    <li>Diagnóstico: Verifique as luzes do link e a integridade da conexão física</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">2</span>
-                <strong>Problemas na Camada de Enlace (2)</strong>
-                <p>Simule um problema de endereçamento MAC:</p>
-                <ul>
-                    <li>Adicione um comutador (switch) entre dispositivos</li>
-                    <li>Configure um filtro MAC no comutador (MAC Filter)</li>
-                    <li>Diagnóstico: Verifique a tabela ARP (<code>arp -a</code>) e a tabela MAC do comutador</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">3</span>
-                <strong>Problemas na Camada de Rede (3)</strong>
-                <p>Simule um problema de encaminhamento:</p>
-                <ul>
-                    <li>Configure um endereço IP incorrecto ou máscara de sub-rede errada</li>
-                    <li>Desactive uma interface do encaminhador</li>
-                    <li>Diagnóstico: Verifique a configuração IP (<code>ipconfig</code>) e a tabela de rotas (<code>route print</code>)</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">4</span>
-                <strong>Problemas na Camada de Transporte (4)</strong>
-                <p>Simule um problema de porta:</p>
-                <ul>
-                    <li>Configure uma ACL no encaminhador para bloquear a porta 80 (HTTP)</li>
-                    <li>Tente aceder ao servidor web</li>
-                    <li>Diagnóstico: Verifique se outros serviços funcionam (<code>telnet 192.168.2.20 80</code>)</li>
-                </ul>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">5</span>
-                <strong>Problemas nas Camadas Superiores (5-7)</strong>
-                <p>Simule problemas de aplicação:</p>
-                <ul>
-                    <li>Desactive o serviço HTTP no servidor</li>
-                    <li>Configure um nome de domínio incorrecto no DNS</li>
-                    <li>Diagnóstico: Teste DNS (<code>nslookup</code>) e conexão directa por IP</li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
-        </div>
-    </div>
-    
-    <!-- Slide 14 -->
-    <div class="slide">
-        <div class="header">
-            <h2>COMPARAÇÃO DETALHADA: MODELO OSI vs TCP/IP</h2>
-        </div>
-        <div class="content">
-            <table>
-                <tr>
-                    <th>Atributo</th>
-                    <th>Modelo OSI</th>
-                    <th>Modelo TCP/IP</th>
-                </tr>
-                <tr>
-                    <td>Número de Camadas</td>
-                    <td>7 camadas</td>
-                    <td>4 camadas</td>
-                </tr>
-                <tr>
-                    <td>Origem</td>
-                    <td>Desenvolvido pela ISO como modelo teórico</td>
-                    <td>Desenvolvido pelo DoD baseado em protocolos reais</td>
-                </tr>
-                <tr>
-                    <td>Abordagem</td>
-                    <td>Separa as funções de rede em camadas mais específicas</td>
-                    <td>Combina funções em camadas mais abrangentes</td>
-                </tr>
-                <tr>
-                    <td>Adopção</td>
-                    <td>Principalmente usado como referência conceptual</td>
-                    <td>Amplamente implementado na prática</td>
-                </tr>
-                <tr>
-                    <td>Protocolos</td>
-                    <td>Define serviços, interfaces e protocolos</td>
-                    <td>Não distingue claramente entre serviços, interfaces e protocolos</td>
-                </tr>
-                <tr>
-                    <td>Flexibilidade</td>
-                    <td>Rígido, com camadas bem definidas</td>
-                    <td>Mais flexível, adaptável a diferentes necessidades</td>
-                </tr>
-            </table>
-            
-            <h3>Mapeamento entre os modelos</h3>
-            <div class="image-container">
-                <img src="/api/placeholder/600/200" alt="Mapeamento entre OSI e TCP/IP">
-            </div>
-            
-            <div class="highlight">
-                <p><strong>Importante para Resolução de Problemas:</strong> Quando um problema de rede ocorre, o modelo OSI ajuda a isolar em qual camada o problema está a acontecer, permitindo uma abordagem metodológica para resolução. Comece sempre verificando a camada física e suba gradualmente.</p>
-            </div>
-            
-            <div class="step">
-                <span class="step-number">!</span>
-                <strong>Regra prática para resolução de problemas</strong>
-                <p>"Se não pode fazer PING a um host, o problema está nas camadas 1-3. Se pode fazer PING mas não pode aceder a um serviço específico, o problema está nas camadas 4-7."</p>
-            </div>
-        </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
-        </div>
-    </div>
-    
-    <!-- Slide 15 -->
-    <div class="slide">
-        <div class="header">
-            <h2>RESUMO E AVALIAÇÃO</h2>
-        </div>
-        <div class="content">
-            <h3>Pontos-chave da aula prática</h3>
+    <div class="definitions">
+        <h3>Conceitos Fundamentais</h3>
+        
+        <div class="concept">
+            <h4>Ciclo FDX (Fetch-Decode-Execute)</h4>
+            <p>É o ciclo básico de operação da CPU que consiste em três fases principais:</p>
             <ul>
-                <li>O modelo OSI é uma estrutura conceptual de 7 camadas que padroniza as funções de um sistema de comunicação de rede.</li>
-                <li>O modelo TCP/IP é uma implementação prática com 4 camadas que é a base da internet.</li>
-                <li>Cada camada do modelo OSI encapsula dados e adiciona seu próprio cabeçalho.</li>
-                <li>Packet Tracer é uma ferramenta excelente para visualizar e entender as operações em cada camada.</li>
-                <li>A abordagem de resolução de problemas baseada em camadas permite identificar e resolver problemas de forma sistemática.</li>
+                <li><strong>Fetch (Busca):</strong> A CPU busca a instrução na memória usando o endereço contido no PC</li>
+                <li><strong>Decode (Decodificação):</strong> A UC interpreta a instrução para determinar quais ações serão executadas</li>
+                <li><strong>Execute (Execução):</strong> A CPU executa a instrução, realizando as operações necessárias com os dados</li>
             </ul>
-            
-            <h3>Exercícios Práticos para Avaliação</h3>
-            <div class="highlight">
-                <h4>Exercício 1: Criação de Topologia Completa</h4>
-                <p>Crie uma topologia de rede com dois encaminhadores, dois comutadores e quatro PCs, divididos em duas subredes distintas. Configure todos os dispositivos para permitir a comunicação entre todos os hosts e implemente um servidor web em uma das subredes.</p>
-            </div>
-            
-            <div class="highlight">
-                <h4>Exercício 2: Análise de Pacotes</h4>
-                <p>Usando o modo de simulação, capture e analise pacotes para os seguintes protocolos:</p>
-                <ol>
-                    <li>ARP (Camada 2)</li>
-                    <li>ICMP (Camada 3)</li>
-                    <li>TCP handshake (Camada 4)</li>
-                    <li>HTTP (Camada 7)</li>
-                </ol>
-                <p>Para cada pacote, identifique os cabeçalhos relevantes e explique sua função.</p>
-            </div>
-            
-            <div class="highlight">
-                <h4>Exercício 3: Resolução de Problemas</h4>
-                <p>O seu colega irá introduzir um problema na sua topologia de rede. Use a abordagem sistemática do modelo OSI para identificar e resolver o problema, documentando cada passo do processo de resolução de problemas.</p>
-            </div>
         </div>
-        <div class="footer">
-            <div>Msc, Eng. Alberto Come</div>
-            <div>Arquitectura de Computadores I | Modelo OSI/TCP/IP</div>
-            <div>25.03.2025</div>
+        
+        <div class="concept">
+            <h4>Instrução</h4>
+            <p>Uma ordem dada ao processador para executar uma determinada operação. É composta por um código de operação (que indica qual operação realizar) e, quando necessário, operandos (que indicam os dados ou endereços envolvidos na operação).</p>
+        </div>
+        
+        <div class="concept">
+            <h4>Conjunto de Instruções</h4>
+            <p>O vocabulário completo de uma arquitetura de computador, consistindo de todas as instruções que o processador pode executar. Define as operações básicas que o hardware pode realizar.</p>
         </div>
     </div>
+    
+    <div class="footer">
+        <p>© 2025 - ISGE-GM | Curso de Informática de Gestão | Docente: Msc, Eng. Alberto Comé</p>
+    </div>
+    
+    <script>
+        // Estado global da simulação
+        let currentStep = 0;
+        let autoMode = false;
+        let autoModeInterval;
+        
+        // Elementos DOM
+        const nextStepButton = document.getElementById('nextStep');
+        const resetButton = document.getElementById('reset');
+        const autoButton = document.getElementById('auto');
+        const stepDisplay = document.getElementById('stepDisplay');
+        const stepDescription = document.getElementById('step-description');
+        
+        // Registradores
+        const pcValue = document.getElementById('pc-value');
+        const irValue = document.getElementById('ir-value');
+        const remValue = document.getElementById('rem-value');
+        const rdmValue = document.getElementById('rdm-value');
+        const accValue = document.getElementById('acc-value');
+        const regBValue = document.getElementById('reg-b-value');
+        
+        // Componentes
+        const uc = document.getElementById('uc');
+        const ula = document.getElementById('ula');
+        const pc = document.getElementById('pc');
+        const ir = document.getElementById('ir');
+        const rem = document.getElementById('rem');
+        const rdm = document.getElementById('rdm');
+        const acc = document.getElementById('acc');
+        const regB = document.getElementById('reg-b');
+        
+        // Barramentos
+        const addressBus = document.getElementById('address-bus');
+        const dataBus = document.getElementById('data-bus');
+        const controlBus = document.getElementById('control-bus');
+        
+        // Endereços na RAM
+        const memoryAddresses = {};
+        for (let i = 0; i <= 6; i++) {
+            memoryAddresses[i] = document.getElementById(`address-${i}`);
+        }
+        
+        // Valores na RAM
+        const memoryValues = {};
+        for (let i = 0; i <= 6; i++) {
+            memoryValues[i] = document.getElementById(`value-${i}`);
+        }
+        
+        // Passos da simulação
+        const simulationSteps = [
+            // Inicialização
+            {
+                description: "<h3>Início da Simulação</h3><p>O programa para somar 1+4 já está carregado na memória RAM. Vamos seguir o ciclo FDX (Fetch-Decode-Execute) para executar este programa.</p>",
+                action: () => {
+                    resetAll();
+                }
+            },
+            // Passo 1: Busca da Instrução (LOAD [2])
+            {
+                description: "<h3>Passo 1: Busca da Instrução (Fetch)</h3><p>A Unidade de Controle carrega o valor do PC (0) no REM para buscar a instrução no endereço 0 da memória.</p>",
+                action: () => {
+                    activateComponent(uc);
+                    activateComponent(pc);
+                    activateBus(controlBus, "UC → REM: Carregue o endereço");
+                    activateComponent(rem);
+                    remValue.textContent = pcValue.textContent;
+                    activateBus(addressBus, `Endereço ${pcValue.textContent} solicitado`);
+                }
+            },
+            {
+                description: "<h3>Passo 2: Busca da Instrução (Fetch)</h3><p>O conteúdo do endereço 0 da memória ('LOAD [2]') é carregado no RDM através do barramento de dados.</p>",
+                action: () => {
+                    activateMemoryAddress(0);
+                    activateBus(dataBus, "LOAD [2]");
+                    activateComponent(rdm);
+                    rdmValue.textContent = "LOAD [2]";
+                }
+            },
+            {
+                description: "<h3>Passo 3: Busca da Instrução (Fetch)</h3><p>A instrução 'LOAD [2]' é transferida do RDM para o IR (Registrador de Instrução).</p>",
+                action: () => {
+                    activateComponent(ir);
+                    irValue.textContent = rdmValue.textContent;
+                    incrementPC();
+                }
+            },
+            // Passo 4: Decodificação da Instrução
+            {
+                description: "<h3>Passo 4: Decodificação da Instrução (Decode)</h3><p>A Unidade de Controle decodifica a instrução 'LOAD [2]', interpretando que deve carregar o valor do endereço 2 da memória no acumulador.</p>",
+                action: () => {
+                    activateComponent(uc);
+                    activateBus(controlBus, "UC decodifica: LOAD [2]");
+                }
+            },
+            // Passo 5-7: Execução da Instrução LOAD
+            {
+                description: "<h3>Passo 5: Execução (Execute) - LOAD [2]</h3><p>A UC carrega o endereço 2 no REM para buscar o operando.</p>",
+                action: () => {
+                    activateComponent(rem);
+                    remValue.textContent = "2";
+                    activateBus(addressBus, "Endereço 2 solicitado");
+                }
+            },
+            {
+                description: "<h3>Passo 6: Execução (Execute) - LOAD [2]</h3><p>O valor do endereço 2 (1) é carregado no RDM.</p>",
+                action: () => {
+                    activateMemoryAddress(2);
+                    activateBus(dataBus, "1");
+                    activateComponent(rdm);
+                    rdmValue.textContent = "1";
+                }
+            },
+            {
+                description: "<h3>Passo 7: Execução (Execute) - LOAD [2]</h3><p>O valor 1 é transferido do RDM para o acumulador (ACC).</p>",
+                action: () => {
+                    activateComponent(acc);
+                    accValue.textContent = "1";
+                }
+            },
+            // Passo 8: Busca da próxima instrução (ADD [3])
+            {
+                description: "<h3>Passo 8: Busca da Instrução (Fetch)</h3><p>PC = 1. A UC carrega este valor no REM para buscar a próxima instrução na memória.</p>",
+                action: () => {
+                    activateComponent(uc);
+                    activateComponent(pc);
+                    activateComponent(rem);
+                    remValue.textContent = pcValue.textContent;
+                    activateBus(addressBus, `Endereço ${pcValue.textContent} solicitado`);
+                }
+            },
+            {
+                description: "<h3>Passo 9: Busca da Instrução (Fetch)</h3><p>O conteúdo do endereço 1 da memória ('ADD [3]') é carregado no RDM.</p>",
+                action: () => {
+                    activateMemoryAddress(1);
+                    activateBus(dataBus, "ADD [3]");
+                    activateComponent(rdm);
+                    rdmValue.textContent = "ADD [3]";
+                }
+            },
+            {
+                description: "<h3>Passo 10: Busca da Instrução (Fetch)</h3><p>A instrução 'ADD [3]' é transferida do RDM para o IR.</p>",
+                action: () => {
+                    activateComponent(ir);
+                    irValue.textContent = rdmValue.textContent;
+                    incrementPC();
+                }
+            },
+            // Passo 11: Decodificação da instrução ADD
+            {
+                description: "<h3>Passo 11: Decodificação da Instrução (Decode)</h3><p>A UC decodifica a instrução 'ADD [3]', interpretando que deve somar o valor do endereço 3 da memória ao acumulador.</p>",
+                action: () => {
+                    activateComponent(uc);
+                    activateBus(controlBus, "UC decodifica: ADD [3]");
+                }
+            },
+            // Passos 12-15: Execução da instrução ADD
+            {
+                description: "<h3>Passo 12: Execução (Execute) - ADD [3]</h3><p>A UC carrega o endereço 3 no REM para buscar o segundo operando.</p>",
+                action: () => {
+                    activateComponent(rem);
+                    remValue.textContent = "3";
+                    activateBus(addressBus, "Endereço 3 solicitado");
+                }
+            },
+            {
+                description: "<h3>Passo 13: Execução (Execute) - ADD [3]</h3><p>O valor do endereço 3 (4) é carregado no RDM.</p>",
+                action: () => {
+                    activateMemoryAddress(3);
+                    activateBus(dataBus, "4");
+                    activateComponent(rdm);
+                    rdmValue.textContent = "4";
+                }
+            },
+            {
+                description: "<h3>Passo 14: Execução (Execute) - ADD [3]</h3><p>O valor 4 é transferido do RDM para o registrador temporário B.</p>",
+                action: () => {
+                    activateComponent(regB);
+                    regBValue.textContent = "4";
+                }
+            },
+            {
+                description: "<h3>Passo 15: Execução (Execute) - ADD [3]</h3><p>A ULA soma o conteúdo do acumulador (1) com o do registrador B (4), resultando em 5, que é armazenado no acumulador.</p>",
+                action: () => {
+                    activateComponent(ula);
+                    document.getElementById('ula-operation').innerHTML = "1 + 4 = 5";
+                    activateComponent(acc);
+                    accValue.textContent = "5";
+                }
+            },
+            // Busca da próxima instrução (STORE [5])
+            {
+                description: "<h3>Passo 16: Busca da Instrução (Fetch)</h3><p>PC = 2. A UC carrega este valor no REM para buscar a próxima instrução na memória.</p>",
+                action: () => {
+                    activateComponent(uc);
+                    activateComponent(pc);
+                    activateComponent(rem);
+                    remValue.textContent = pcValue.textContent;
+                    activateBus(addressBus, `Endereço ${pcValue.textContent} solicitado`);
+                }
+            },
+            {
+                description: "<h3>Passo 17: Busca da Instrução (Fetch)</h3><p>O conteúdo do endereço 4 (não 2, pois já consumimos os endereços 2 e 3 com dados) da memória ('STORE [5]') é carregado no RDM.</p>",
+                action: () => {
+                    activateMemoryAddress(4);
+                    activateBus(dataBus, "STORE [5]");
+                    activateComponent(rdm);
+                    rdmValue.textContent = "STORE [5]";
+                }
+            },
+            {
+                description: "<h3>Passo 18: Busca da Instrução (Fetch)</h3><p>A instrução 'STORE [5]' é transferida do RDM para o IR.</p>",
+                action: () => {
+                    activateComponent(ir);
+                    irValue.textContent = rdmValue.textContent;
+                    incrementPC();
+                }
+            },
+            // Decodificação da instrução STORE
+            {
+                description: "<h3>Passo 19: Decodificação da Instrução (Decode)</h3><p>A UC decodifica a instrução 'STORE [5]', interpretando que deve armazenar o valor do acumulador no endereço 5 da memória.</p>",
+                action: () => {
+                    activateComponent(uc);
+                    activateBus(controlBus, "UC decodifica: STORE [5]");
+                }
+            },
+            // Execução da instrução STORE
+            {
+                description: "<h3>Passo 20: Execução (Execute) - STORE [5]</h3><p>A UC carrega o endereço 5 no REM para preparar a escrita na memória.</p>",
+                action: () => {
+                    activateComponent(rem);
+                    remValue.textContent = "5";
+                    activateBus(addressBus, "Endereço 5 para escrita");
+                }
+            },
+            {
+                description: "<h3>Passo 21: Execução (Execute) - STORE [5]</h3><p>O valor do acumulador (5) é transferido para o RDM.</p>",
+                action: () => {
+                    activateComponent(rdm);
+                    rdmValue.textContent = "5";
+                }
+            },
+            {
+                description: "<h3>Passo 22: Execução (Execute) - STORE [5]</h3><p>O valor 5 é escrito no endereço 5 da memória.</p>",
+                action: () => {
+                    activateBus(dataBus, "5 (escrita)");
+                    activateComponent(ram);
+                    memoryValues[5].textContent = "5";
+                    activateMemoryAddress(5);
+                }
+            },
+            // Finalização
+            {
+                description: "<h3>Processo Concluído</h3><p>A CPU executou com sucesso a soma 1+4 e armazenou o resultado 5 na memória. Note como cada componente da CPU teve seu papel no processo:</p><ul><li>PC: Controlar qual instrução seria executada</li><li>IR: Armazenar a instrução atual</li><li>UC: Decodificar instruções e coordenar as operações</li><li>ULA: Realizar a operação de soma</li><li>Registradores (REM, RDM, ACC): Armazenar temporariamente os dados</li><li>Barramentos: Transferir dados e sinais entre componentes</li></ul>",
+                action: () => {
+                    resetActive();
+                }
+            }
+        ];
+        
+        // Event listeners
+        nextStepButton.addEventListener('click', nextStep);
+        resetButton.addEventListener('click', resetSimulation);
+        autoButton.addEventListener('click', toggleAutoMode);
+        
+        // Funções de controle da simulação
+        function nextStep() {
+            if (currentStep < simulationSteps.length) {
+                resetActive();
+                simulationSteps[currentStep].action();
+                stepDescription.innerHTML = simulationSteps[currentStep].description;
+                stepDisplay.textContent = currentStep;
+                currentStep++;
+            } else {
+                alert("Simulação concluída! Clique em 'Reiniciar' para começar novamente.");
+                if (autoMode) toggleAutoMode();
+            }
+        }
+        
+        function resetSimulation() {
+            currentStep = 0;
+            if (autoMode) toggleAutoMode();
+            nextStep();
+        }
+        
+        function toggleAutoMode() {
+            autoMode = !autoMode;
+            autoButton.textContent = autoMode ? "Parar Automático" : "Modo Automático";
+            
+            if (autoMode) {
+                autoModeInterval = setInterval(() => {
+                    if (currentStep < simulationSteps.length) {
+                        nextStep();
+                    } else {
+                        toggleAutoMode();
+                    }
+                }, 2000);
+            } else {
+                clearInterval(autoModeInterval);
+            }
+        }
+        
+        // Funções auxiliares
+        function activateComponent(component) {
+            component.classList.add('active');
+            setTimeout(() => {
+                component.classList.remove('active');
+            }, 1500);
+        }
+        
+        function activateMemoryAddress(index) {
+            memoryAddresses[index].classList.add('active');
+            setTimeout(() => {
+                memoryAddresses[index].classList.remove('active');
+            }, 1500);
+        }
+        
+        function activateBus(bus, text) {
+            bus.textContent = text;
+            bus.classList.add('active');
+            setTimeout(() => {
+                bus.classList.remove('active');
+                bus.textContent = bus.id.replace('-bus', '').charAt(0).toUpperCase() + 
+                                 bus.id.replace('-bus', '').slice(1) + " Bus";
+            }, 1500);
+        }
+        
+        function incrementPC() {
+            const currentPC = parseInt(pcValue.textContent);
+            pcValue.textContent = currentPC + 1;
+        }
+        
+        function resetActive() {
+            // Limpa todas as classes active
+            const activeElements = document.querySelectorAll('.active');
+            activeElements.forEach(element => {
+                element.classList.remove('active');
+            });
+            
+            // Reseta os textos dos barramentos
+            addressBus.textContent = "Barramento de Endereço";
+            dataBus.textContent = "Barramento de Dados";
+            controlBus.textContent = "Barramento de Controle";
+            
+            // Limpa operação da ULA
+            document.getElementById('ula-operation').innerHTML = "";
+        }
+        
+        function resetAll() {
+            resetActive();
+            
+            // Reseta registradores
+            pcValue.textContent = "0";
+            irValue.textContent = "--";
+            remValue.textContent = "--";
+            rdmValue.textContent = "--";
+            accValue.textContent = "0";
+            regBValue.textContent = "--";
+            
+            // Reseta a memória para o estado original
+            memoryValues[0].textContent = "LOAD [2]";
+            memoryValues[1].textContent = "ADD [3]";
+            memoryValues[2].textContent = "1";
+            memoryValues[3].textContent = "4";
+            memoryValues[4].textContent = "STORE [5]";
+            memoryValues[5].textContent = "--";
+            memoryValues[6].textContent = "HALT";
+        }
+        
+        // Inicializa a simulação
+        nextStep();
+    </script>
 </body>
 </html>
